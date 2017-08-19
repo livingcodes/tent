@@ -1,9 +1,24 @@
 ﻿@page
 @model AboutModel
 @{
-    ViewData["Title"] = "About";
+    
 }
-<h2>@ViewData["Title"]</h2>
-<h3>@Model.Message</h3>
-
-<p>Use this area to provide additional information.</p>
+<h2>About Tent</h2>
+<h3>Tent for content</h3>
+<p>
+    Tent is a lightweight content management system (CMS).
+    Store content (user, article, video, order)
+    Search content (keyword, date, author)
+    Query content
+    <pre>var user = db.Get<User>(id);</pre>
+    Update content
+    <pre>
+        user.JoinedEmailList = true;
+        db.Save(user);
+    </pre>
+    Schedule start and end publish dates
+    Metadata (Title, Description, CreateDate, LastModifyDate)
+    History of changes
+    Rollback to previous version
+    Duplicate
+</p>
