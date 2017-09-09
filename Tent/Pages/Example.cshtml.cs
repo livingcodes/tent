@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-
-namespace Tent.Pages
+﻿namespace Tent.Pages
 {
     public class ContactModel : BasePage
     {
