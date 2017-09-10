@@ -1,0 +1,13 @@
+﻿@page
+@model Tent.Pages.admin.LoginModel
+@functions{
+    public async Task<IActionResult> OnPostAsync() {return Page();}
+}
+
+<form method="post">
+    <input asp-for="Login.Email" />
+    <br>
+    <input type="password" placeholder="Password" asp-for="Login.Password" />
+    <br>
+    <input type="submit" value="Login" />
+</form>
