@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
@@ -15,6 +16,12 @@ namespace Tent.Pages.admin
     }
     public class LoginModel : PageModel
     {
+        public LoginModel(ILogger<LoginModel> logger) {
+            this.logger = logger;
+        }
+
+        ILogger<LoginModel> logger;
+
         public void OnGet() {
             ViewData["Title"] = "Login";
         }
@@ -23,6 +30,7 @@ namespace Tent.Pages.admin
         public Login Login { get; set; }
 
         public async Task<IActionResult> OnPostAsync() {
+            logger.LogDebug("Login post");
             // todo: required and length client-side validation doesn't prevent this http post
             if (!ModelState.IsValid)
                 return Page();
