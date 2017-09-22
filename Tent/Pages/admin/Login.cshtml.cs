@@ -11,7 +11,9 @@ namespace Tent.Pages.admin
         [Required, EmailAddress]
         public string Email { get; set; }
 
-        [Required, StringLength(32, MinimumLength = 8)]
+        [Required]
+        [StringLength(32, MinimumLength = 8)]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
     }
     public class LoginModel : PageModel
