@@ -11,7 +11,7 @@ namespace Tent.Tests
         public void QueryTable() {
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(@"c:\code\tent\tent.tests\appsettings.json")
+                .AddJsonFile(@"c:\code\secrets\Tent\settings.json")
                 .Build();
             string connectionString = config["connectionString"];
 
