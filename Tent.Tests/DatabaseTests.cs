@@ -4,18 +4,26 @@ using System.IO;
 
 namespace Tent.Tests
 {
-    [TestClass]
-    public class DatabaseTests
+    public class BaseTests
     {
-        [TestMethod]
-        public void QueryTable() {
-            var config = new ConfigurationBuilder()
+        public BaseTests() {
+            this.configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile(@"c:\code\secrets\Tent\settings.json")
                 .Build();
-            string connectionString = config["connectionString"];
+            string connectionString = configuration["connectionString"];
+            this.db = new Database(connectionString);
+        }
 
-            IDatabase db = new Database(connectionString);
+        protected IConfigurationRoot configuration;
+        protected IDatabase db;
+    }
+
+    [TestClass]
+    public class DatabaseTests : BaseTests
+    {
+        [TestMethod]
+        public void QueryTable() {
             var users = db.Query<User>("select * from aspnetusers");
             Assert.IsTrue(users.Count > 0);
         }
