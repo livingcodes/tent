@@ -31,10 +31,42 @@ namespace Tent.Tests
 
         [TestMethod]
         public void Insert() {
-            db.Insert<Post>(new Post() {
+            var post = new Post() {
                 Title = "ASP.NET Core DI",
                 Html = "<h1>ASP.NET Core DI</h1><p>Dependency injection</p>"
-            });
+            };
+            db.Insert<Post>(post);
+            var posts = db.Query<Post>($"select * from posts where title = '{post.Title}'");
+            Assert.IsTrue(posts.Count > 0);
+
+            db.Delete<Post>(post.Id);
+        }
+
+        [TestMethod]
+        public void Delete() {
+            var post = new Post() {
+                Title = "ASP.NET Core DI",
+                Html = "<h1>ASP.NET Core DI</h1><p>Dependency injection</p>"
+            };
+            db.Insert<Post>(post);
+            var posts = db.Query<Post>($"select * from posts where title = '{post.Title}'");
+            Assert.IsTrue(posts.Count > 0);
+
+            foreach (var p in posts)
+                db.Delete<Post>(p.Id);
+
+            posts = db.Query<Post>($"select * from posts where title = '{post.Title}'");
+            Assert.IsTrue(posts.Count == 0);
+        }
+
+        [TestMethod]
+        public void QueryWithParameter() {
+            throw new NotImplementedException(nameof(QueryWithParameter));
+        }
+
+        [TestMethod]
+        public void HandleNullDateTime() {
+            
         }
     }
     class User

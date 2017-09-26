@@ -10,6 +10,7 @@ namespace Tent
         List<T> Query<T>(string sql);
         int Insert<T>(T obj);
         int Update<T>(T obj);
+        int Delete<T>(int id);
     }
 
     public class Database : IDatabase
@@ -46,7 +47,7 @@ namespace Tent
             return list;
         }
 
-        /// <summary>Insert object into datbase. Returns number of rows affected</summary>
+        /// <summary>Insert object into datbase. Returns id.</summary>
         public int Insert<T>(T instance) {
             var connection = new SqlConnection(connectionString);
             SqlCommand command = null;
@@ -69,6 +70,25 @@ namespace Tent
         }
 
         public int Update<T>(T obj) => throw new System.NotImplementedException();
+
+        public int Delete<T>(int id) {
+            var table = typeof(T).Name + "s";
+            int rowsAffected = 0;
+            var connection = new SqlConnection(connectionString);
+            SqlCommand command = null;
+            try {
+                connection.Open();
+                command = connection.CreateCommand();
+                command.CommandText = $"delete from {table} where id = {id}";
+                rowsAffected = command.ExecuteNonQuery();
+            } finally {
+                if (command != null)
+                    command.Dispose();
+                if (connection.State != ConnectionState.Closed)
+                    connection.Close();
+            }
+            return rowsAffected;
+        }
     }
 
     public interface ISqlBuilder
