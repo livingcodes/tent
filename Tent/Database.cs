@@ -85,7 +85,7 @@ namespace Tent
                 connection.Open();
                 command = connection.CreateCommand();
                 ISqlBuilder sqlBuilder = new SqlBuilder<T>(instance, command);
-                var sql = sqlBuilder.BuildSql();
+                var sql = sqlBuilder.BuildInsertSql();
                 command.CommandText = sql;
                 rowsAffected = command.ExecuteNonQuery();
             } finally {
@@ -97,7 +97,26 @@ namespace Tent
             return rowsAffected;
         }
 
-        public int Update<T>(T obj) => throw new System.NotImplementedException();
+        public int Update<T>(T instance) {
+            var connection = new SqlConnection(connectionString);
+            SqlCommand command = null;
+            int rowsAffected = 0;
+
+            try {
+                connection.Open();
+                command = connection.CreateCommand();
+                ISqlBuilder sqlBuilder = new SqlBuilder<T>(instance, command);
+                var sql = sqlBuilder.BuildUpdateSql();
+                command.CommandText = sql;
+                rowsAffected = command.ExecuteNonQuery();
+            } finally {
+                if (command != null)
+                    command.Dispose();
+                if (connection.State != ConnectionState.Closed)
+                    connection.Close();
+            }
+            return rowsAffected;
+        }
 
         public int Delete<T>(int id) {
             var table = typeof(T).Name + "s";
@@ -118,41 +137,11 @@ namespace Tent
             return rowsAffected;
         }
     }
-
-    public interface ISqlBuilder
+    public static class DatabaseExtensions
     {
-        string BuildSql();
-    }
-    public class SqlBuilder<T> : ISqlBuilder
-    {
-        public SqlBuilder(T instance, SqlCommand command) {
-            this.instance = instance;
-            this.command = command;
-        }
-        T instance;
-        SqlCommand command;
-        
-        public string BuildSql() {
-            var tableName = instance.GetType().Name + "s";
-            var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-            var columnNames = "";
-            var values = "";
-            foreach (var property in properties) {
-                if (property.Name.ToUpper() == "ID")
-                    continue;
-                
-                var value = property.GetValue(instance);
-                if (value is null)
-                    value = DBNull.Value;
-                columnNames += property.Name + ", ";
-
-                command.Parameters.AddWithValue("@" + property.Name, value);
-                values += "@" + property.Name + ", ";
-            }
-            columnNames = columnNames.Substring(0, columnNames.Length - 2);
-            values = values.Substring(0, values.Length - 2);
-            var sql = $@"INSERT INTO {tableName} ({columnNames}) VALUES ({values})";
-            return sql;
+        public static void Truncate<T>(this IDatabase db) {
+            var tableName = typeof(T).Name + "s";
+            db.Query<T>($"truncate table {tableName}");
         }
     }
 }

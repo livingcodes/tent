@@ -2,6 +2,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
+using System.Linq;
+using Tent;
 
 namespace Tent.Tests
 {
@@ -24,54 +26,40 @@ namespace Tent.Tests
     public class DatabaseTests : BaseTests
     {
         [TestMethod]
-        public void QueryTable() {
+        public void InsertQueryUpdateDelete() {
+            db.Truncate<Post>();
+
+            // insert
+            var post = new Post() {
+                Title = "ASP.NET Core DI",
+                Html = "<h1>ASP.NET Core DI</h1><p>Dependency injection</p>"
+            };
+            db.Insert(post);
+
+            // verify insert (query sql)
             var posts = db.Query<Post>("select * from posts");
             Assert.IsTrue(posts.Count > 0);
-        }
 
-        [TestMethod]
-        public void Insert() {
-            var post = new Post() {
-                Title = "ASP.NET Core DI",
-                Html = "<h1>ASP.NET Core DI</h1><p>Dependency injection</p>"
-            };
-            db.Insert<Post>(post);
-            var posts = db.Query<Post>($"select * from posts where title = '{post.Title}'");
-            Assert.IsTrue(posts.Count > 0);
+            // update title
+            post = posts[0];
+            post.Title = "Updated";
+            db.Update(post);
 
+            // verify update
+            post = db.Query<Post>(post.Id);
+            Assert.IsTrue(post.Title == "Updated");
+
+            // delete
             db.Delete<Post>(post.Id);
+
+            // verify delete (query id)
+            post = db.Query<Post>(post.Id);
+            Assert.IsTrue(post == null);
         }
-
-        [TestMethod]
-        public void Delete() {
-            var post = new Post() {
-                Title = "ASP.NET Core DI",
-                Html = "<h1>ASP.NET Core DI</h1><p>Dependency injection</p>"
-            };
-            db.Insert<Post>(post);
-            var posts = db.Query<Post>($"select * from posts where title = '{post.Title}'");
-            Assert.IsTrue(posts.Count > 0);
-
-            foreach (var p in posts)
-                db.Delete<Post>(p.Id);
-
-            posts = db.Query<Post>($"select * from posts where title = '{post.Title}'");
-            Assert.IsTrue(posts.Count == 0);
-        }
-
-        [TestMethod]
-        public void QueryById() {
-            db.Query<int>("truncate table posts");
-            var id = db.Insert(new Post() {
-                Title = "1",
-                Html = "One"
-            });
-            var post = db.Query<Post>(1);
-        }
-
+        
         [TestMethod]
         public void QueryWithParameter() {
-            throw new NotImplementedException(nameof(QueryWithParameter));
+            
         }
 
         [TestMethod]
