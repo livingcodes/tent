@@ -60,6 +60,16 @@ namespace Tent.Tests
         }
 
         [TestMethod]
+        public void QueryById() {
+            db.Query<int>("truncate table posts");
+            var id = db.Insert(new Post() {
+                Title = "1",
+                Html = "One"
+            });
+            var post = db.Query<Post>(1);
+        }
+
+        [TestMethod]
         public void QueryWithParameter() {
             throw new NotImplementedException(nameof(QueryWithParameter));
         }

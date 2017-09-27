@@ -7,6 +7,7 @@ namespace Tent
 {
     public interface IDatabase
     {
+        T Query<T>(int id);
         List<T> Query<T>(string sql);
         int Insert<T>(T obj);
         int Update<T>(T obj);
@@ -20,6 +21,33 @@ namespace Tent
         }
 
         string connectionString;
+
+        public T Query<T>(int id) {
+            T item = default(T);
+            var table = typeof(T).Name + "s";
+            var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            var connection = new SqlConnection(connectionString);
+            IDbCommand command = null;
+            try {
+                connection.Open();
+                command = connection.CreateCommand();
+                command.CommandText = $"select * from {table} where id = {id}";
+                var reader = command.ExecuteReader();
+                while (reader.Read()) {
+                    item = System.Activator.CreateInstance<T>();
+                    foreach (var property in properties) {
+                        property.SetValue(item, reader[property.Name]);
+                    }
+                    break;
+                }
+            } finally {
+                if (command != null)
+                    command.Dispose();
+                if (connection.State != System.Data.ConnectionState.Closed)
+                    connection.Close();
+            }
+            return item;
+        }
 
         public List<T> Query<T>(string sql) {
             var list = new List<T>();
