@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 
-namespace Tent
+namespace Tent.Data
 {
     public interface IDatabase
     {
-        T Query<T>(int id);
-        List<T> Query<T>(string sql);
+        T Select<T>(int id);
+        List<T> Select<T>(string sql, params object[] parameters);
         int Insert<T>(T obj);
         int Update<T>(T obj);
         int Delete<T>(int id);
     }
-
+    
     public class Database : IDatabase
     {
         public Database(string connectionString) {
@@ -22,7 +23,7 @@ namespace Tent
 
         string connectionString;
 
-        public T Query<T>(int id) {
+        public T Select<T>(int id) {
             T item = default(T);
             var table = typeof(T).Name + "s";
             var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
@@ -33,13 +34,7 @@ namespace Tent
                 command = connection.CreateCommand();
                 command.CommandText = $"select * from {table} where id = {id}";
                 var reader = command.ExecuteReader();
-                while (reader.Read()) {
-                    item = System.Activator.CreateInstance<T>();
-                    foreach (var property in properties) {
-                        property.SetValue(item, reader[property.Name]);
-                    }
-                    break;
-                }
+                item = new ReaderToClass<T>().Convert(reader);
             } finally {
                 if (command != null)
                     command.Dispose();
@@ -49,7 +44,7 @@ namespace Tent
             return item;
         }
 
-        public List<T> Query<T>(string sql) {
+        public List<T> Select<T>(string sql, params object[] parameters) {
             var list = new List<T>();
             var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
             var connection = new SqlConnection(connectionString);
@@ -59,13 +54,7 @@ namespace Tent
                 command = connection.CreateCommand();
                 command.CommandText = sql;
                 var reader = command.ExecuteReader();
-                while (reader.Read()) {
-                    var item = System.Activator.CreateInstance<T>();
-                    foreach (var property in properties) {
-                        property.SetValue(item, reader[property.Name]);
-                    }
-                    list.Add(item);
-                }
+                list = new ReaderToList<T>().Convert(reader);
             } finally {
                 if (command != null)
                     command.Dispose();
@@ -141,7 +130,7 @@ namespace Tent
     {
         public static void Truncate<T>(this IDatabase db) {
             var tableName = typeof(T).Name + "s";
-            db.Query<T>($"truncate table {tableName}");
+            db.Select<T>($"truncate table {tableName}");
         }
     }
 }

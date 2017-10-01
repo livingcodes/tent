@@ -1,27 +1,9 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.IO;
-using System.Linq;
-using Tent;
+using Tent.Data;
 
 namespace Tent.Tests
 {
-    public class BaseTests
-    {
-        public BaseTests() {
-            this.configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(@"c:\code\secrets\Tent\settings.json")
-                .Build();
-            string connectionString = configuration["connectionString"];
-            this.db = new Database(connectionString);
-        }
-
-        protected IConfigurationRoot configuration;
-        protected IDatabase db;
-    }
-
     [TestClass]
     public class DatabaseTests : BaseTests
     {
@@ -37,7 +19,7 @@ namespace Tent.Tests
             db.Insert(post);
 
             // verify insert (query sql)
-            var posts = db.Query<Post>("select * from posts");
+            var posts = db.Select<Post>("select * from posts");
             Assert.IsTrue(posts.Count > 0);
 
             // update title
@@ -46,31 +28,16 @@ namespace Tent.Tests
             db.Update(post);
 
             // verify update
-            post = db.Query<Post>(post.Id);
+            post = db.Select<Post>(post.Id);
             Assert.IsTrue(post.Title == "Updated");
 
             // delete
             db.Delete<Post>(post.Id);
 
             // verify delete (query id)
-            post = db.Query<Post>(post.Id);
+            post = db.Select<Post>(post.Id);
             Assert.IsTrue(post == null);
         }
-        
-        [TestMethod]
-        public void QueryWithParameter() {
-            
-        }
-
-        [TestMethod]
-        public void HandleNullDateTime() {
-            
-        }
-    }
-    class User
-    {
-        public string Id { get; set; }
-        public string Email { get; set; }
     }
     class Post
     {
