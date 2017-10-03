@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System.IO;
 using Tent.Data;
 
 namespace Tent.Tests
@@ -8,7 +7,6 @@ namespace Tent.Tests
     {
         public BaseTests() {
             this.configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile(@"c:\code\secrets\Tent\settings.json")
                 .Build();
             string connectionString = configuration["connectionString"];
