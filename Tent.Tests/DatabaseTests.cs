@@ -39,6 +39,7 @@ namespace Tent.Tests
             Assert.IsTrue(post == null);
         }
     }
+
     class Post
     {
         public Post() {

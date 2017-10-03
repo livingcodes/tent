@@ -42,11 +42,13 @@ namespace Tent.Data
             var list = new List<T>();
             var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
             var connection = new SqlConnection(connectionString);
-            IDbCommand command = null;
+            SqlCommand command = null;
             try {
                 connection.Open();
                 command = connection.CreateCommand();
                 command.CommandText = this.sql;
+                foreach (var parameter in parameters)
+                    command.Parameters.AddWithValue(parameter.name, parameter.value);
                 var reader = command.ExecuteReader();
                 var converter = new ReaderToList<T>();
                 list = converter.Convert(reader);

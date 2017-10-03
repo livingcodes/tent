@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
 
 namespace Tent.Data
 {
@@ -10,6 +8,7 @@ namespace Tent.Data
     {
         T Select<T>(int id);
         List<T> Select<T>(string sql, params object[] parameters);
+        ISproc Sproc(string name);
         int Insert<T>(T obj);
         int Update<T>(T obj);
         int Delete<T>(int id);
@@ -62,6 +61,10 @@ namespace Tent.Data
                     connection.Close();
             }
             return list;
+        }
+
+        public ISproc Sproc(string name) {
+            return new Sproc(connectionString, name);
         }
 
         /// <summary>Insert object into datbase. Returns id.</summary>
