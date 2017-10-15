@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 
-namespace Tent
+namespace Tent.Data
 {
     public interface ISqlBuilder
     {
@@ -10,27 +10,33 @@ namespace Tent
     }
     public class SqlBuilder<T> : ISqlBuilder
     {
-        public SqlBuilder(T instance, SqlCommand command) {
+        public SqlBuilder(T instance, SqlCommand command, IDatabase db) {
             this.instance = instance;
             this.command = command;
+            this.db = db;
         }
         T instance;
         SqlCommand command;
+        IDatabase db;
 
         public string BuildInsertSql() {
             var tableName = instance.GetType().Name + "s";
             var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            var tableColumns = new GetColumns().From(tableName, db);
             var columnNames = "";
             var values = "";
+            
             foreach (var property in properties) {
                 if (property.Name.ToUpper() == "ID")
+                    continue;
+                if (!tableColumns.Contains(property.Name))
                     continue;
 
                 var value = property.GetValue(instance);
                 if (value is null)
                     value = DBNull.Value;
                 columnNames += property.Name + ", ";
-
+                
                 command.Parameters.AddWithValue("@" + property.Name, value);
                 values += "@" + property.Name + ", ";
             }
@@ -43,6 +49,7 @@ namespace Tent
         public string BuildUpdateSql() {
             var tableName = instance.GetType().Name + "s";
             var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            var tableColumns = new GetColumns().From(tableName, db);
             var setters = "";
             var id = "0";
             foreach (var property in properties) {
@@ -50,6 +57,8 @@ namespace Tent
                     id = property.GetValue(instance).ToStringOr("0");
                     continue;
                 }
+                if (!tableColumns.Contains(property.Name))
+                    continue;
 
                 var value = property.GetValue(instance);
                 if (value is null)

@@ -38,6 +38,22 @@ namespace Tent.Tests
             post = db.Select<Post>(post.Id);
             Assert.IsTrue(post == null);
         }
+
+        [TestMethod]
+        public void InsertAndSelectClassWithPropertyThatDoesNotMatchColumn() {
+            db.Truncate<Post>();
+            db.Insert(new Post() {
+                Title = "abc", Html = "def"
+            });
+            //db.Select<int>("INSERT INTO Posts (Title, Html, DateCreated) VALUES ('abc', 'def', GETDATE())");
+            var post = db.Select<Post>(1);
+            Assert.IsTrue(post != null);
+        }
+
+        [TestMethod]
+        public void InsertClassWithPropertyThatDoesNotMatchColumn() {
+            
+        }
     }
 
     class Post
@@ -47,6 +63,7 @@ namespace Tent.Tests
         }
         public int Id { get; set; }
         public string Title { get; set; }
+        public string Summary { get; set; }
         public string Html { get; set; }
         public DateTime DateCreated { get; set; }
     }

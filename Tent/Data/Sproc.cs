@@ -48,7 +48,7 @@ namespace Tent.Data
                 foreach (var parameter in parameters)
                     command.Parameters.AddWithValue(parameter.name, parameter.value);
                 var reader = command.ExecuteReader();
-                var converter = new ReaderToList<T>();
+                var converter = new ReaderToClassList<T>();
                 list = converter.Convert(reader);
             } finally {
                 if (command != null)

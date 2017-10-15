@@ -25,7 +25,6 @@ namespace Tent.Data
         public T Select<T>(int id) {
             T item = default(T);
             var table = typeof(T).Name + "s";
-            var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
             var connection = new SqlConnection(connectionString);
             IDbCommand command = null;
             try {
@@ -45,7 +44,6 @@ namespace Tent.Data
 
         public List<T> Select<T>(string sql, params object[] parameters) {
             var list = new List<T>();
-            var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
             var connection = new SqlConnection(connectionString);
             IDbCommand command = null;
             try {
@@ -76,7 +74,7 @@ namespace Tent.Data
             try {
                 connection.Open();
                 command = connection.CreateCommand();
-                ISqlBuilder sqlBuilder = new SqlBuilder<T>(instance, command);
+                ISqlBuilder sqlBuilder = new SqlBuilder<T>(instance, command, this);
                 var sql = sqlBuilder.BuildInsertSql();
                 command.CommandText = sql;
                 rowsAffected = command.ExecuteNonQuery();
@@ -97,7 +95,7 @@ namespace Tent.Data
             try {
                 connection.Open();
                 command = connection.CreateCommand();
-                ISqlBuilder sqlBuilder = new SqlBuilder<T>(instance, command);
+                ISqlBuilder sqlBuilder = new SqlBuilder<T>(instance, command, this);
                 var sql = sqlBuilder.BuildUpdateSql();
                 command.CommandText = sql;
                 rowsAffected = command.ExecuteNonQuery();
