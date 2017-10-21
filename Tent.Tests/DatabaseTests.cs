@@ -109,10 +109,17 @@ namespace Tent.Tests
     }
 
     // CoverImage column does not have property
-    //
     [TestClass]
     public class ColumnWithoutProperty : BaseTests
     {
+        // table has column that can't be null 
+        //  and it does not have a mapped property
+        // when insert
+        // then an exception is thrown 
+        //  because a null is attempted to be inserted into a column that does not accept null
+        //  there's not a way for tada to know what default value to use (if that's even desired)
+        //  but the class constructor could set a default value for the property,
+        //  if a default is desired
         [TestMethod, ExpectedException(typeof(System.Data.SqlClient.SqlException))]
         public void ColumnNotNullThenThrowsException() {
             var sql = @"
@@ -155,8 +162,10 @@ namespace Tent.Tests
             var rowsAffected = db.Insert(new Post() {
                 Title = "abc", Html = "def"
             });
+            var post = db.Select<Post>(1);
 
             Assert.IsTrue(rowsAffected == 1);
+            Assert.IsTrue(post.Title == "abc");
         }
 
         class Post

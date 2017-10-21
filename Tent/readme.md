@@ -4,13 +4,13 @@
 The connection string file path is set ...
 
 # To Do
-* Property does not have column
-* During queries ignore properties that don't have matching column
+X Property does not have column
+X During queries ignore properties that don't have matching column
 * Map columns to properties with different names
 * Select value type (string, int)
-* Sproc
+X Sproc
 X Move connection string from appsettings.json to someplace out of source control
-* Get DataTable
+X Get DataTable
 * Cache class properties
 * Cache return result
 * Handle null datetime
