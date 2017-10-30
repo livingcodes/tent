@@ -4,6 +4,7 @@
 The connection string file path is set ...
 
 # To Do
+* Configuration to insert or update properties and/or fields
 X Property does not have column
 X During queries ignore properties that don't have matching column
 * Map columns to properties with different names

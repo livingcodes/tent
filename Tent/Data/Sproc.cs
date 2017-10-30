@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-using System.Reflection;
 
 namespace Tent.Data
 {
@@ -15,13 +13,20 @@ namespace Tent.Data
 
     public class Sproc : ISproc
     {
-        public Sproc(string connectionString, string name) {
-            this.connectionString = connectionString;
+        public Sproc(
+            IConnectionFactory connectionFactory,
+            IRead reader,
+            string name
+        ) {
+            this.connectionFactory = connectionFactory;
+            this.reader = reader;
             this.name = name;
             parameters = new List<(string name, object value)>();
-            query = new Query(connectionString);
+            query = new Query(connectionFactory, reader);
         }
-        string connectionString, name;
+        IConnectionFactory connectionFactory;
+        IRead reader;
+        string name;
         List<(string name, object value)> parameters;
         IQuery query;
 
@@ -37,19 +42,21 @@ namespace Tent.Data
 
         public List<T> Select<T>() {
             var list = new List<T>();
-            var properties = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            var connection = new SqlConnection(connectionString);
-            SqlCommand command = null;
+            var connection = connectionFactory.Create();
+            IDbCommand command = null;
             try {
                 connection.Open();
                 command = connection.CreateCommand();
                 command.CommandText = name;
                 command.CommandType = CommandType.StoredProcedure;
-                foreach (var parameter in parameters)
-                    command.Parameters.AddWithValue(parameter.name, parameter.value);
+                foreach (var parameter in parameters) {
+                    var p = command.CreateParameter();
+                    p.ParameterName = parameter.name;
+                    p.Value = parameter.value;
+                    command.Parameters.Add(p);
+                }
                 var reader = command.ExecuteReader();
-                var converter = new ReaderToClassList<T>();
-                list = converter.Convert(reader);
+                list = this.reader.ReadList<T>(reader);
             } finally {
                 if (command != null)
                     command.Dispose();
@@ -61,17 +68,21 @@ namespace Tent.Data
 
         public T SelectOne<T>() {
             T item = default(T);
-            var connection = new SqlConnection(connectionString);
-            SqlCommand command = null;
+            var connection = connectionFactory.Create();
+            IDbCommand command = null;
             try {
                 connection.Open();
                 command = connection.CreateCommand();
                 command.CommandText = name;
                 command.CommandType = CommandType.StoredProcedure;
-                foreach (var parameter in parameters)
-                    command.Parameters.AddWithValue(parameter.name, parameter.value);
+                foreach (var parameter in parameters) {
+                    var p = command.CreateParameter();
+                    p.ParameterName = parameter.name;
+                    p.Value = parameter.value;
+                    command.Parameters.Add(p);
+                }
                 var reader = command.ExecuteReader();
-                item = new ReaderToClass<T>().Convert(reader);
+                item = this.reader.Read<T>(reader);
             } finally {
                 if (command != null)
                     command.Dispose();

@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 
 namespace Tent.Data
 {
     public interface IQuery
     {
         List<T> Select<T>(string sql = null);
-        (List<T>, List<U>) Select<T, U>(string sql = null);
+        //(List<T>, List<U>) Select<T, U>(string sql = null);
         DataTable SelectTable(string sql = null);
         T SelectOne<T>(string sql = null);
 
@@ -17,16 +16,19 @@ namespace Tent.Data
 
     public class Query : IQuery
     {
-        public Query(string connectionString) {
-            this.connectionString = connectionString;
-        }
-        public Query(string connectionString, string sql, params object[] parameters)
-        : this(connectionString) {
-            Sql(sql);
+        public Query(
+            IConnectionFactory connectionFactory, 
+            IRead reader
+        ) {
+            this.connectionFactory = connectionFactory;
+            this.reader = reader;
+            this.parameters = new List<(string name, object value)>();
         }
 
-        string connectionString, sql;
-        List<(string name, object value)> parameters = new List<(string name, object value)>();
+        IConnectionFactory connectionFactory;
+        IRead reader;
+        string sql;
+        List<(string name, object value)> parameters;
 
         public IQuery Sql(string sql) {
             this.sql = sql;
@@ -36,26 +38,29 @@ namespace Tent.Data
             parameters.Add((name, value));
             return this;
         }
+
         public List<T> Select<T>(string sql = null) {
             if (sql != null)
                 Sql(sql);
             var list = new List<T>();
-            var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-            var connection = new SqlConnection(connectionString);
-            SqlCommand command = null;
+            var connection = connectionFactory.Create();
+            IDbCommand command = null;
             try {
                 connection.Open();
                 command = connection.CreateCommand();
                 command.CommandText = this.sql;
-                foreach (var parameter in parameters)
-                    command.Parameters.AddWithValue(parameter.name, parameter.value);
+                foreach (var parameter in parameters) {
+                    var p = command.CreateParameter();
+                    p.ParameterName = parameter.name;
+                    p.Value = parameter.value;
+                    command.Parameters.Add(p);
+                }
                 var reader = command.ExecuteReader();
-                var converter = new ReaderToClassList<T>();
-                list = converter.Convert(reader);
+                list = this.reader.ReadList<T>(reader);
             } finally {
                 if (command != null)
                     command.Dispose();
-                if (connection.State != System.Data.ConnectionState.Closed)
+                if (connection.State != ConnectionState.Closed)
                     connection.Close();
             }
             return list;
@@ -64,20 +69,18 @@ namespace Tent.Data
             if (sql != null)
                 Sql(sql);
             T item = default(T);
-            var table = typeof(T).Name + "s";
-            var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-            var connection = new SqlConnection(connectionString);
+            var connection = connectionFactory.Create();
             IDbCommand command = null;
             try {
                 connection.Open();
                 command = connection.CreateCommand();
                 command.CommandText = this.sql;
                 var reader = command.ExecuteReader();
-                item = new ReaderToClass<T>().Convert(reader);
+                item = this.reader.Read<T>(reader);
             } finally {
                 if (command != null)
                     command.Dispose();
-                if (connection.State != System.Data.ConnectionState.Closed)
+                if (connection.State != ConnectionState.Closed)
                     connection.Close();
             }
             return item;
@@ -86,16 +89,20 @@ namespace Tent.Data
             if (sql != null)
                 Sql(sql);
             var dataTable = new DataTable();
-            var connection = new SqlConnection(connectionString);
-            SqlCommand command = null;
+            var connection = connectionFactory.Create();
+            IDbCommand command = null;
             try {
                 connection.Open();
                 command = connection.CreateCommand();
                 command.CommandText = this.sql;
-                foreach (var parameter in parameters)
-                    command.Parameters.AddWithValue(parameter.name, parameter.value);
+                foreach (var parameter in parameters) {
+                    var p = command.CreateParameter();
+                    p.ParameterName = parameter.name;
+                    p.Value = parameter.value;
+                    command.Parameters.Add(p);
+                }
                 var reader = command.ExecuteReader();
-                dataTable = new ReaderToDataTable().Convert(reader);
+                dataTable.Load(reader);
             } finally {
                 if (command != null)
                     command.Dispose();
@@ -104,8 +111,8 @@ namespace Tent.Data
             }
             return dataTable;
         }
-        public (List<T>, List<U>) Select<T, U>(string sql = null) {
-            return (new List<T>() { default(T) }, new List<U>() { default(U) });
-        }
+        //public (List<T>, List<U>) Select<T, U>(string sql = null) {
+        //    return (new List<T>() { default(T) }, new List<U>() { default(U) });
+        //}
     }
 }

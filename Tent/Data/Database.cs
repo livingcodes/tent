@@ -62,7 +62,9 @@ namespace Tent.Data
         }
 
         public ISproc Sproc(string name) {
-            return new Sproc(connectionString, name);
+            var connectionFactory = new SqlConnectionFactory();
+            var reader = new Reader();
+            return new Sproc(connectionFactory, reader, name);
         }
 
         /// <summary>Insert object into datbase. Returns id.</summary>
