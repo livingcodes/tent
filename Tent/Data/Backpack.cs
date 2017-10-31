@@ -1,43 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace Tent.Data
 {
-    public interface IRead
-    {
-        T Read<T>(IDataReader reader);
-        List<T> ReadList<T>(IDataReader reader);
-    }
-
-    public interface IConnectionFactory
-    {
-        IDbConnection Create();
-    }
-
-    public class SqlConnectionFactory : IConnectionFactory
-    {
-        public IDbConnection Create() {
-            return new SqlConnection("server=(LocalDb)\\MSSQLLocalDB; database=Tent; trusted_connection=true;");
-        }
-    }
-    public class Reader : IRead
-    {
-        public T Read<T>(IDataReader reader) {
-            return new ReaderToClass<T>().Convert(reader);
-        }
-        public List<T> ReadList<T>(IDataReader reader) {
-            return new ReaderToList<T>().Convert(reader);
-        }
-    }
-
     public class Pack : Backpack
     {
         public Pack() 
         : base(new SqlConnectionFactory(), new Reader()) 
-        {
-            
-        }
+        {}
     }
 
     public class Backpack
@@ -65,7 +34,7 @@ namespace Tent.Data
         }
 
         public Backpack Sql(string sql) {
-            this.sql = sql;
+            query.Sql(sql);
             return this;
         }
 
@@ -77,14 +46,22 @@ namespace Tent.Data
         public List<T> Select<T>(string sql = null, params object[] parameters) {
             if (sql != null)
                 query.Sql(sql);
-            var parameterNames = getParameterNamesFromSql(sql);
-            if (parameterNames.Count != parameters.Length)
-                throw new System.Exception("Parameter name and value counts are not equal");
-            for (var i = 0; i < parameters.Length; i++)
-                query.Parameter(parameterNames[i], parameters[i]);
+            var parameterNames = getParameterNamesFromSql(query.Sql());
+            if (parameterNames.Count > 0) {
+                if (parameters.Length > 0) {
+                    if (parameters.Length != parameterNames.Count)
+                        throw new System.Exception($"Parameter name and value counts are not equal. Parameter name count: {parameterNames.Count}, Parameter value count: {parameters.Length}");
+                    for (var i = 0; i < parameters.Length; i++)
+                        query.Parameter(parameterNames[i], parameters[i]);
+                }
+            }
             var list = query.Select<T>();
             setQueryToNull();
             return list;
+        }
+
+        public void DropTable(string tableName) {
+            Select<int>($"drop table {tableName}");
         }
 
         List<string> getParameterNamesFromSql(string sql) {

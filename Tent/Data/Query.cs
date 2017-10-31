@@ -12,6 +12,8 @@ namespace Tent.Data
 
         IQuery Sql(string sql);
         IQuery Parameter(string name, object value);
+
+        string Sql();
     }
 
     public class Query : IQuery
@@ -33,6 +35,9 @@ namespace Tent.Data
         public IQuery Sql(string sql) {
             this.sql = sql;
             return this;
+        }
+        public string Sql() {
+            return sql;
         }
         public IQuery Parameter(string name, object value) {
             parameters.Add((name, value));

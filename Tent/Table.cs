@@ -16,17 +16,26 @@
 
         public Table(string name) {
             Name = name;
-            Sql = $"create table {name} (";
+            Sql = $@"
+            IF EXISTS (
+                SELECT * FROM INFORMATION_SCHEMA.TABLES
+                WHERE TABLE_NAME = 'Posts'
+            )
+                drop table {name}
+            create table {name} (";
         }
 
         public string Name, Sql;
 
         public Table AddColumn(string columnName, SqlType sqlType, string syntax = "") {
-            Sql += $"{sqlType} {columnName} {syntax}\r\n";
+            Sql += $"{columnName} {sqlType} {syntax},\r\n";
             return this;
         }
 
         public Table End() {
+            var lastIndex = Sql.LastIndexOf(",\r\n");
+            Sql = Sql.Remove(lastIndex, 3);
+            Sql = Sql.Insert(lastIndex, "\r\n");
             Sql += ")";
             return this;
         }

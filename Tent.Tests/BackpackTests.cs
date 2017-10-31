@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Tent.Data;
+using static Tent.Table;
 
 namespace Tent.Tests
 {
@@ -8,6 +9,14 @@ namespace Tent.Tests
     {
         public BackpackTests() : base() {
             pack = new Pack();
+            
+            var sql = new Table("Posts")
+                .AddColumn("Id", SqlType.Int, Syntax.Identity(1, 1))
+                .AddColumn("Html", SqlType.VarCharMax)
+                .End()
+                .Sql;
+            pack.Select<int>(sql);
+
             db.Insert(new Post() {
                 Html = "abc"
             });
@@ -22,7 +31,7 @@ namespace Tent.Tests
 
         [TestMethod]
         public void SelectWithParameter() {
-            var posts = pack.Select<Post>("select * from posts where id = @id", 2);
+            var posts = pack.Select<Post>("select * from posts where id = @id", 1);
             Assert.IsTrue(posts.Count > 0);
         }
 
@@ -30,6 +39,14 @@ namespace Tent.Tests
         public void SelectWith2Parameters() {
             var posts = pack.Select<Post>("select * from posts where id = @id and html = @html", 1, "abc");
             Assert.IsTrue(posts.Count > 0);
+        }
+
+        [TestMethod]
+        public void ParameterSelect() {
+            var posts = pack.Sql("select * from posts where id = @id")
+                .Parameter("id", 1)
+                .Select<Post>();
+            Assert.IsTrue(posts.Count == 1);
         }
 
         public class Post
