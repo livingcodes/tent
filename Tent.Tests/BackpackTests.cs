@@ -44,9 +44,24 @@ namespace Tent.Tests
         [TestMethod]
         public void ParameterSelect() {
             var posts = pack.Sql("select * from posts where id = @id")
-                .Parameter("id", 1)
+                .Parameter("@id", 1)
                 .Select<Post>();
             Assert.IsTrue(posts.Count == 1);
+        }
+
+        [TestMethod]
+        public void Parameter2Select() {
+            var posts = pack.Sql("select * from posts where id = @id and html = @html")
+                .Parameter("@id", 1)
+                .Parameter("@html", "abc")
+                .Select<Post>();
+            Assert.IsTrue(posts.Count == 1);
+        }
+
+        [TestMethod]
+        public void EmptyListResult() {
+            var posts = db.Select<Post>("select * from posts where id = 2");
+            Assert.IsTrue(posts.Count == 0);
         }
 
         public class Post
