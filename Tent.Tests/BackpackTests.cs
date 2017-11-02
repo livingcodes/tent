@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using Tent.Data;
 using static Tent.Table;
 
@@ -9,7 +10,7 @@ namespace Tent.Tests
     {
         public BackpackTests() : base() {
             pack = new Pack();
-            
+
             var sql = new Table("Posts")
                 .AddColumn("Id", SqlType.Int, Syntax.Identity(1, 1))
                 .AddColumn("Html", SqlType.VarCharMax)
@@ -60,8 +61,14 @@ namespace Tent.Tests
 
         [TestMethod]
         public void EmptyListResult() {
-            var posts = db.Select<Post>("select * from posts where id = 2");
+            var posts = pack.Select<Post>("select * from posts where id = 2");
             Assert.IsTrue(posts.Count == 0);
+        }
+
+        [TestMethod, ExpectedException(typeof(Exception))]
+        public void ParameterCountDoesNotMatch() {
+            var posts = pack.Select<Post>("select * from posts where id = @id and html = @html", 1);
+            // throws exception
         }
 
         public class Post
