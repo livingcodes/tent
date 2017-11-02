@@ -65,6 +65,12 @@ namespace Tent.Tests
             Assert.IsTrue(posts.Count == 0);
         }
 
+        [TestMethod]
+        public void ParameterUsedMultipleTimes() {
+            var posts = pack.Select<Post>("select * from posts where id = @id and id < (@id + 1) and html = @html", 1, "abc");
+            Assert.IsTrue(posts.Count == 1);
+        }
+
         [TestMethod, ExpectedException(typeof(Exception))]
         public void ParameterCountDoesNotMatch() {
             var posts = pack.Select<Post>("select * from posts where id = @id and html = @html", 1);
