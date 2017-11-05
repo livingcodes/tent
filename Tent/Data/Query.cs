@@ -81,6 +81,12 @@ namespace Tent.Data
                 connection.Open();
                 command = connection.CreateCommand();
                 command.CommandText = this.sql;
+                foreach (var parameter in parameters) {
+                    var p = command.CreateParameter();
+                    p.ParameterName = parameter.name;
+                    p.Value = parameter.value;
+                    command.Parameters.Add(p);
+                }
                 var reader = command.ExecuteReader();
                 item = this.reader.Read<T>(reader);
             } finally {

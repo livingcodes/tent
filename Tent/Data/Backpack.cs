@@ -92,9 +92,12 @@ namespace Tent.Data
             var parameters = new Dictionary<string, int>();
             var index = sql.IndexOf('@');
             while (index > -1) {
-                var endIndex = sql.IndexOfAny(new char[] {' ', ','}, index);
+                var endIndex = sql.IndexOfAny(new char[] {' ', ',', ')'}, index);
                 if (endIndex == -1)
                     endIndex = sql.Length - 1;
+                else
+                    endIndex -= 1;
+                
                 var parameterName = sql.Substring(index, endIndex - index + 1);
                 if (!parameters.ContainsKey(parameterName))
                     parameters.Add(parameterName, index);

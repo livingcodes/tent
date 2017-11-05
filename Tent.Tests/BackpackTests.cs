@@ -81,6 +81,12 @@ namespace Tent.Tests
         }
 
         [TestMethod]
+        public void ExecuteWithParameter() {
+            var affectedRows = pack.Execute("insert into posts values (@post)", "cat lols");
+            Assert.IsTrue(affectedRows == 1);
+        }
+
+        [TestMethod]
         public void SelectEmptyListResult() {
             var posts = pack.Select<Post>("select * from posts where id = 2");
             Assert.IsTrue(posts.Count == 0);
