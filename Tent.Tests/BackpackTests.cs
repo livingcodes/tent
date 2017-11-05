@@ -16,7 +16,7 @@ namespace Tent.Tests
                 .AddColumn("Html", SqlType.VarCharMax)
                 .End()
                 .Sql;
-            pack.Select<int>(sql);
+            pack.Execute(sql);
 
             db.Insert(new Post() {
                 Html = "abc"
