@@ -10,12 +10,11 @@
     Store content (user, article, video, order)
     Search content (keyword, date, author)
     Query content
-    <pre>var user = db.Get<User>(id);</pre>
+    <pre>var user = db.Get&lt;User&gt;(id);</pre>
     Update content
     <pre>
-        user.JoinedEmailList = true;
-        db.Save(user);
-    </pre>
+user.JoinedEmailList = true;
+db.Save(user);</pre>
     Schedule start and end publish dates
     Metadata (Title, Description, CreateDate, LastModifyDate)
     History of changes

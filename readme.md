@@ -1,17 +1,12 @@
-﻿# Getting Started
-* set connection string
+﻿Tent is a lightweight content management system (CMS). It is just for fun and in early stages. The goal is to make a quick and easy way to create a new content type with data access for developer and edit screens for editors.
 
-The connection string file path is set ...
+# Getting Started
+* set connection string
 
 # To Do
 * Configuration to insert or update properties and/or fields
-X Property does not have column
-X During queries ignore properties that don't have matching column
 * Map columns to properties with different names
 * Select value type (string, int, DateTime)
-X Sproc
-X Move connection string from appsettings.json to someplace out of source control
-X Get DataTable
 * Cache class properties
 * Cache return result
 * Handle null datetime
