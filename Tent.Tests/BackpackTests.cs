@@ -66,6 +66,12 @@ namespace Tent.Tests
         }
 
         [TestMethod]
+        public void SelectOneWithParameter() {
+            var post = pack.SelectOne<Post>("select * from posts where id = @id", 1);
+            Assert.IsTrue(post.Id == 1);
+        }
+
+        [TestMethod]
         public void Execute() {
             var affectedRows = pack.Execute("insert into posts values ('another')");
             Assert.IsTrue(affectedRows == 1);
