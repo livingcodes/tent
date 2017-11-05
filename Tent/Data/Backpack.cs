@@ -72,6 +72,10 @@ namespace Tent.Data
             return item;
         }
 
+        public T Select<T>(int id) {
+            return SelectOne<T>($"select * from {typeof(T).Name}s where id = @id", id);
+        }
+
         public int Execute(string sql = null, params object[] parameters) {
             if (sql != null)
                 query.Sql(sql);

@@ -8,7 +8,7 @@ The connection string file path is set ...
 X Property does not have column
 X During queries ignore properties that don't have matching column
 * Map columns to properties with different names
-* Select value type (string, int)
+* Select value type (string, int, DateTime)
 X Sproc
 X Move connection string from appsettings.json to someplace out of source control
 X Get DataTable
