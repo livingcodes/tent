@@ -60,6 +60,23 @@ namespace Tent.Data
             return list;
         }
 
+        public T SelectOne<T>(string sql = null, params object[] parameters) {
+            if (sql != null)
+                query.Sql(sql);
+            var parameterNames = getParameterNamesFromSql(query.Sql());
+            if (parameterNames.Count > 0)
+                for (var i = 0; i < parameters.Length; i++)
+                    query.Parameter(parameterNames[i], parameters[i]);
+            var item = query.SelectOne<T>();
+            setQueryToNull();
+            return item;
+        }
+
+        //public int Execute(string sql = null, params object[] parameters) {
+        //    int affectedRows = SelectOne<int>(sql, parameters);
+        //    return affectedRows;
+        //}
+
         public void DropTable(string tableName) {
             Select<int>($"drop table {tableName}");
         }
@@ -80,6 +97,17 @@ namespace Tent.Data
             foreach (var key in parameters.Keys)
                 keys.Add(key);
             return keys;
+        }
+    }
+
+    public class Admin
+    {
+        public Admin(Backpack db) {
+            this.db = db;
+        }
+        Backpack db;
+        public void DropTable(string tableName) {
+            db.Select<int>($"drop table {tableName}");
         }
     }
 }

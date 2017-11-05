@@ -31,19 +31,19 @@ namespace Tent.Tests
         }
 
         [TestMethod]
-        public void SelectWithParameter() {
+        public void SelectWithParameterArguement() {
             var posts = pack.Select<Post>("select * from posts where id = @id", 1);
             Assert.IsTrue(posts.Count > 0);
         }
 
         [TestMethod]
-        public void SelectWith2Parameters() {
+        public void SelectWith2ParameterArguements() {
             var posts = pack.Select<Post>("select * from posts where id = @id and html = @html", 1, "abc");
             Assert.IsTrue(posts.Count > 0);
         }
 
         [TestMethod]
-        public void ParameterSelect() {
+        public void SelectWithParameterFunction() {
             var posts = pack.Sql("select * from posts where id = @id")
                 .Parameter("@id", 1)
                 .Select<Post>();
@@ -51,7 +51,7 @@ namespace Tent.Tests
         }
 
         [TestMethod]
-        public void Parameter2Select() {
+        public void SelectWith2ParameterFunctions() {
             var posts = pack.Sql("select * from posts where id = @id and html = @html")
                 .Parameter("@id", 1)
                 .Parameter("@html", "abc")
@@ -60,13 +60,25 @@ namespace Tent.Tests
         }
 
         [TestMethod]
-        public void EmptyListResult() {
+        public void SelectOne() {
+            var post = pack.SelectOne<Post>("select * from posts");
+            Assert.IsTrue(post.Id == 1);
+        }
+
+        //[TestMethod]
+        //public void Execute() {
+        //    var affectedRows = pack.Execute("insert into posts values ('another')");
+        //    Assert.IsTrue(affectedRows == 1);
+        //}
+
+        [TestMethod]
+        public void SelectEmptyListResult() {
             var posts = pack.Select<Post>("select * from posts where id = 2");
             Assert.IsTrue(posts.Count == 0);
         }
 
         [TestMethod]
-        public void ParameterUsedMultipleTimes() {
+        public void SelectWithParameterUsedMultipleTimes() {
             var posts = pack.Select<Post>("select * from posts where id = @id and id < (@id + 1) and html = @html", 1, "abc");
             Assert.IsTrue(posts.Count == 1);
         }
