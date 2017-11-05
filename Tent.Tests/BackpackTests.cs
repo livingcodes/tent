@@ -65,11 +65,14 @@ namespace Tent.Tests
             Assert.IsTrue(post.Id == 1);
         }
 
-        //[TestMethod]
-        //public void Execute() {
-        //    var affectedRows = pack.Execute("insert into posts values ('another')");
-        //    Assert.IsTrue(affectedRows == 1);
-        //}
+        [TestMethod]
+        public void Execute() {
+            var affectedRows = pack.Execute("insert into posts values ('another')");
+            Assert.IsTrue(affectedRows == 1);
+
+            affectedRows = pack.Execute("insert into posts values ('third'); insert into posts values ('fourth')");
+            Assert.IsTrue(affectedRows == 2);
+        }
 
         [TestMethod]
         public void SelectEmptyListResult() {

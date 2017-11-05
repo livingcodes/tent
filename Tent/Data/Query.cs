@@ -9,6 +9,7 @@ namespace Tent.Data
         //(List<T>, List<U>) Select<T, U>(string sql = null);
         DataTable SelectTable(string sql = null);
         T SelectOne<T>(string sql = null);
+        int Execute(string sql = null);
 
         IQuery Sql(string sql);
         IQuery Parameter(string name, object value);
@@ -115,6 +116,32 @@ namespace Tent.Data
                     connection.Close();
             }
             return dataTable;
+        }
+
+        public int Execute(string sql = null) {
+            int rowsAffected = -1;
+            if (sql != null)
+                Sql(sql);
+            var connection = connectionFactory.Create();
+            IDbCommand command = null;
+            try {
+                connection.Open();
+                command = connection.CreateCommand();
+                command.CommandText = this.sql;
+                foreach (var parameter in parameters) {
+                    var p = command.CreateParameter();
+                    p.ParameterName = parameter.name;
+                    p.Value = parameter.value;
+                    command.Parameters.Add(p);
+                }
+                rowsAffected = command.ExecuteNonQuery();
+            } finally {
+                if (command != null)
+                    command.Dispose();
+                if (connection.State != ConnectionState.Closed)
+                    connection.Close();
+            }
+            return rowsAffected;
         }
         //public (List<T>, List<U>) Select<T, U>(string sql = null) {
         //    return (new List<T>() { default(T) }, new List<U>() { default(U) });

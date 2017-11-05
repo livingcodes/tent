@@ -72,10 +72,17 @@ namespace Tent.Data
             return item;
         }
 
-        //public int Execute(string sql = null, params object[] parameters) {
-        //    int affectedRows = SelectOne<int>(sql, parameters);
-        //    return affectedRows;
-        //}
+        public int Execute(string sql = null, params object[] parameters) {
+            if (sql != null)
+                query.Sql(sql);
+            var parameterNames = getParameterNamesFromSql(query.Sql());
+            if (parameterNames.Count > 0)
+                for (var i = 0; i < parameters.Length; i++)
+                    query.Parameter(parameterNames[i], parameters[i]);
+            int affectedRows = query.Execute(query.Sql());
+            setQueryToNull();
+            return affectedRows;
+        }
 
         public void DropTable(string tableName) {
             Select<int>($"drop table {tableName}");
