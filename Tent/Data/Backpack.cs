@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.Caching.Memory;
+using System;
+using System.Collections.Generic;
 
 namespace Tent.Data
 {
     public class Pack : Backpack
     {
         public Pack() 
-        : base(new SqlConnectionFactory(), new Reader()) 
+        : base(new SqlConnectionFactory(), new Reader(), new Cache(new MemoryCache(new MemoryCacheOptions())))
         {}
     }
 
@@ -13,14 +15,17 @@ namespace Tent.Data
     {
         public Backpack(
             IConnectionFactory connectionFactory, 
-            IRead reader
+            IRead reader,
+            ICache cache
         ) {
             this.reader = reader;
             this.connectionFactory = connectionFactory;
+            this.cache = cache;
         }
         string sql;
         IConnectionFactory connectionFactory;
         IRead reader;
+        ICache cache;
 
         IQuery query { get {
             if (_query == null)
@@ -43,9 +48,33 @@ namespace Tent.Data
             return this;
         }
 
+        public Backpack Cache(string key = null, System.DateTime? expirationDate = null, int? seconds = null) {
+            cacheKey = key;
+
+            if (expirationDate.HasValue) {
+                var duration = expirationDate.Value.Subtract(DateTime.Now);
+                cacheSeconds = (int)duration.TotalSeconds;
+            } else if (seconds.HasValue) {
+                cacheSeconds = seconds.Value;
+            } else {
+                cacheSeconds = 60; // default, if not set
+            }
+
+            return this;
+        }
+        string cacheKey;
+        int cacheSeconds;
+
         public List<T> Select<T>(string sql = null, params object[] parameters) {
+            if (cacheKey != null) {
+                var cacheValue = cache.Get<List<T>>(cacheKey);
+                if (cacheValue != null)
+                    return (List<T>)cacheValue;
+            }
+
             if (sql != null)
                 query.Sql(sql);
+
             var parameterNames = getParameterNamesFromSql(query.Sql());
             if (parameterNames.Count > 0) {
                 if (parameters.Length > 0) {
@@ -55,9 +84,20 @@ namespace Tent.Data
                         query.Parameter(parameterNames[i], parameters[i]);
                 }
             }
+
             var list = query.Select<T>();
+
+            setCache(list);
             setQueryToNull();
             return list;
+        }
+
+        void setCache(object obj) {
+            if (cacheKey != null) {
+                cache.Set(cacheKey, obj, cacheSeconds);
+                cacheKey = null;
+                cacheSeconds = 60;
+            }
         }
 
         public T SelectOne<T>(string sql = null, params object[] parameters) {

@@ -31,6 +31,19 @@ namespace Tent.Tests
         }
 
         [TestMethod]
+        public void CacheSelect() {
+            var posts = pack.Cache("test").Select<Post>("select * from posts");
+            Assert.IsTrue(posts.Count == 1);
+
+            db.Insert(new Post() { Html = "Test 2" });
+            posts = pack.Select<Post>("select * from posts");
+            Assert.IsTrue(posts.Count == 2);
+
+            posts = pack.Cache("test").Select<Post>("select * from posts");
+            Assert.IsTrue(posts.Count == 1);
+        }
+
+        [TestMethod]
         public void SelectWithParameterArguement() {
             var posts = pack.Select<Post>("select * from posts where id = @id", 1);
             Assert.IsTrue(posts.Count > 0);
