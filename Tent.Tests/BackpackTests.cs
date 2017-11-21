@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Tent.Data;
 using static Tent.Table;
@@ -9,7 +11,16 @@ namespace Tent.Tests
     public class BackpackTests : BaseTests
     {
         public BackpackTests() : base() {
-            pack = new Pack();
+            // i wasn't able to figure out how to construct distributed memory cache
+            // the IOptions in particular
+            // so i used the service provider to build it
+            IServiceCollection services = new ServiceCollection();
+            services.AddDistributedMemoryCache();
+            var serviceProvider = services.BuildServiceProvider();
+            var distributedCache = serviceProvider.GetService<IDistributedCache>();
+
+            var cache = new SerializedCached(distributedCache);
+            pack = new Pack(cache);
 
             var sql = new Table("Posts")
                 .AddColumn("Id", SqlType.Int, Syntax.Identity(1, 1))
@@ -31,7 +42,7 @@ namespace Tent.Tests
         }
 
         [TestMethod]
-        public void CacheSelect() {
+        public void CacheSelectList() {
             var posts = pack.Cache("test").Select<Post>("select * from posts");
             Assert.IsTrue(posts.Count == 1);
 
@@ -41,6 +52,40 @@ namespace Tent.Tests
 
             posts = pack.Cache("test").Select<Post>("select * from posts");
             Assert.IsTrue(posts.Count == 1);
+        }
+
+        [TestMethod]
+        public void CacheSelectOne() {
+            // original html is abc
+            var post = pack.Cache("test-one").SelectOne<Post>("select * from posts where id = 1");
+            Assert.IsTrue(post.Html == "abc");
+
+            // update html to def
+            post.Html = "def";
+            db.Update(post);
+
+            // get uncached, updated html from database
+            var postUpdated = pack.SelectOne<Post>("select * from posts where id = 1");
+            Assert.IsTrue(postUpdated.Html == "def");
+
+            // get cached, original html from cache
+            var cachedPost = pack.Cache("test-one").SelectOne<Post>("select * from post where id = 1");
+            Assert.IsTrue(cachedPost.Html == "abc");
+        }
+
+        [TestMethod]
+        public void CacheSelectById() {
+            var post = pack.Cache("by-id").Select<Post>(1);
+            Assert.IsTrue(post.Html == "abc");
+
+            post.Html = "def";
+            db.Update(post);
+            
+            var updatedPost = pack.Select<Post>(1);
+            Assert.IsTrue(updatedPost.Html == "def");
+
+            var cachedPost = pack.Cache("by-id").Select<Post>(1);
+            Assert.IsTrue(cachedPost.Html == "abc");
         }
 
         [TestMethod]

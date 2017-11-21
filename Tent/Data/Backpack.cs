@@ -1,16 +1,8 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Tent.Data
 {
-    public class Pack : Backpack
-    {
-        public Pack() 
-        : base(new SqlConnectionFactory(), new Reader(), new Cache(new MemoryCache(new MemoryCacheOptions())))
-        {}
-    }
-
     public class Backpack
     {
         public Backpack(
@@ -66,15 +58,17 @@ namespace Tent.Data
         int cacheSeconds;
 
         public List<T> Select<T>(string sql = null, params object[] parameters) {
+        // get from cache
             if (cacheKey != null) {
                 var cacheValue = cache.Get<List<T>>(cacheKey);
                 if (cacheValue != null)
                     return (List<T>)cacheValue;
             }
 
+        // get from database
             if (sql != null)
                 query.Sql(sql);
-
+            
             var parameterNames = getParameterNamesFromSql(query.Sql());
             if (parameterNames.Count > 0) {
                 if (parameters.Length > 0) {
@@ -87,6 +81,7 @@ namespace Tent.Data
 
             var list = query.Select<T>();
 
+        // set cache
             setCache(list);
             setQueryToNull();
             return list;
@@ -101,6 +96,14 @@ namespace Tent.Data
         }
 
         public T SelectOne<T>(string sql = null, params object[] parameters) {
+        // get from cache
+            if (cacheKey != null) {
+                var cacheValue = cache.Get<T>(cacheKey);
+                if (cacheValue != null)
+                    return (T)cacheValue;
+            }
+
+        // get from database
             if (sql != null)
                 query.Sql(sql);
             var parameterNames = getParameterNamesFromSql(query.Sql());
@@ -108,7 +111,12 @@ namespace Tent.Data
                 for (var i = 0; i < parameters.Length; i++)
                     query.Parameter(parameterNames[i], parameters[i]);
             var item = query.SelectOne<T>();
+
+        // set cache
+            setCache(item);
+
             setQueryToNull();
+
             return item;
         }
 
