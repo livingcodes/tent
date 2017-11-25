@@ -103,6 +103,18 @@ namespace Tent.Data
         }
     }
 
+    public class ReaderToValue<T> : IReaderConverter<T>
+    {
+        public T Convert(IDataReader reader) {
+            var value = default(T);
+            while (reader.Read()) {
+                value = (T)reader[0];
+                break;
+            }
+            return value;
+        }
+    }
+
     public class ReaderToStruct<T> : IReaderConverter<T>
     {
         public T Convert(IDataReader reader) {
@@ -125,6 +137,9 @@ namespace Tent.Data
     public class ReaderToItem<T> : IReaderConverter<T>
     {
         public T Convert(IDataReader reader) {
+            if (typeof(T) == typeof(string)
+            ||  typeof(T) == typeof(int))
+                return new ReaderToValue<T>().Convert(reader);
             if (typeof(T).IsClass)
                 return new ReaderToClass<T>().Convert(reader);
             else

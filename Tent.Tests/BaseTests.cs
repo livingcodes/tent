@@ -31,6 +31,6 @@ namespace Tent.Tests
         }
 
         protected IConfigurationRoot configuration;
-        protected IDatabase db;
+        protected Database db;
     }
 }
