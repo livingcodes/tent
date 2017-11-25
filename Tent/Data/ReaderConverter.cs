@@ -44,10 +44,12 @@ namespace Tent.Data
             var columns = new GetColumns().From(reader);
             while (reader.Read()) {
                 var item = default(T);
+                object obj = item; // box
                 foreach (var property in properties) {
                     if (columns.Contains(property.Name))
-                        property.SetValue(item, reader[property.Name]);
+                        property.SetValue(obj, reader[property.Name]);
                 }
+                item = (T)obj; // unbox
                 list.Add(item);
             }
             return list;
