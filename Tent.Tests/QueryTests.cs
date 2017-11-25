@@ -18,7 +18,7 @@ namespace Tent.Tests
 
         [TestMethod]
         public void SelectSql() {
-            var db = new Database(connectionString);
+            var db = new Pack();
             db.Select<int>(@"
                 IF EXISTS (
                     SELECT * FROM INFORMATION_SCHEMA.TABLES

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Tent.Data
 {
-    public class Backpack
+    public partial class Database
     {
-        public Backpack(
+        public Database(
             IConnectionFactory connectionFactory, 
             IRead reader,
             ICache cache
@@ -30,17 +30,17 @@ namespace Tent.Data
             _query = null;
         }
 
-        public Backpack Sql(string sql) {
+        public Database Sql(string sql) {
             query.Sql(sql);
             return this;
         }
 
-        public Backpack Parameter(string name, object value) {
+        public Database Parameter(string name, object value) {
             query.Parameter(name, value);
             return this;
         }
 
-        public Backpack Cache(string key = null, System.DateTime? expirationDate = null, int? seconds = null) {
+        public Database Cache(string key = null, System.DateTime? expirationDate = null, int? seconds = null) {
             cacheKey = key;
 
             if (expirationDate.HasValue) {
@@ -164,10 +164,10 @@ namespace Tent.Data
 
     public class Admin
     {
-        public Admin(Backpack db) {
+        public Admin(Database db) {
             this.db = db;
         }
-        Backpack db;
+        Database db;
         public void DropTable(string tableName) {
             db.Select<int>($"drop table {tableName}");
         }
