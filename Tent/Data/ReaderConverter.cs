@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 
 namespace Tent.Data
 {
@@ -89,7 +90,7 @@ namespace Tent.Data
         public T Convert(IDataReader reader) {
             var item = default(T);
             var columns = new GetColumns().From(reader);
-            var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            var properties = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
             while (reader.Read()) {
                 item = Activator.CreateInstance<T>();
                 foreach (var property in properties) {
@@ -99,6 +100,35 @@ namespace Tent.Data
                 break;
             }
             return item;
+        }
+    }
+
+    public class ReaderToStruct<T> : IReaderConverter<T>
+    {
+        public T Convert(IDataReader reader) {
+            var item = default(T);
+            object boxed = item;
+            var columns = new GetColumns().From(reader);
+            var properties = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            while (reader.Read()) {
+                foreach (var property in properties) {
+                    if (columns.Contains(property.Name))
+                        property.SetValue(boxed, reader[property.Name]);
+                }
+                item = (T)boxed;
+                break;
+            }
+            return item;
+        }
+    }
+
+    public class ReaderToItem<T> : IReaderConverter<T>
+    {
+        public T Convert(IDataReader reader) {
+            if (typeof(T).IsClass)
+                return new ReaderToClass<T>().Convert(reader);
+            else
+                return new ReaderToStruct<T>().Convert(reader);
         }
     }
 

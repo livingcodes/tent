@@ -12,7 +12,8 @@ namespace Tent.Data
     public class Reader : IRead
     {
         public T Read<T>(IDataReader reader) {
-            return new ReaderToClass<T>().Convert(reader);
+            // todo: new ReaderToItem().Convert(reader); // handles class and struct and value
+            return new ReaderToItem<T>().Convert(reader);
         }
         public List<T> ReadList<T>(IDataReader reader) {
             return new ReaderToList<T>().Convert(reader);
