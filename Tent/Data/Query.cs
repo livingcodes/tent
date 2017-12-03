@@ -18,6 +18,14 @@ namespace Tent.Data
         IRead reader;
         string sql;
         List<(string name, object value)> parameters;
+        string sprocName;
+
+        public IQuery Sproc(string name) {
+            sprocName = name;
+            return this;
+        }
+
+        public bool IsSproc => sprocName != null;
 
         public IQuery Sql(string sql) {
             this.sql = sql;
@@ -40,7 +48,13 @@ namespace Tent.Data
             try {
                 connection.Open();
                 command = connection.CreateCommand();
-                command.CommandText = this.sql;
+
+                if (sprocName != null) {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = sprocName;
+                } else {
+                    command.CommandText = this.sql;
+                }
                 foreach (var parameter in parameters) {
                     var p = command.CreateParameter();
                     p.ParameterName = parameter.name;
@@ -66,7 +80,13 @@ namespace Tent.Data
             try {
                 connection.Open();
                 command = connection.CreateCommand();
-                command.CommandText = this.sql;
+
+                if (IsSproc) {
+                    command.CommandText = sprocName;
+                    command.CommandType = CommandType.StoredProcedure;
+                } else {
+                    command.CommandText = this.sql;
+                }
                 foreach (var parameter in parameters) {
                     var p = command.CreateParameter();
                     p.ParameterName = parameter.name;

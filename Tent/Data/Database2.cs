@@ -14,7 +14,6 @@ namespace Tent.Data
             this.connectionFactory = connectionFactory;
             this.cache = cache;
         }
-        string sql;
         IConnectionFactory connectionFactory;
         IRead reader;
         ICache cache;
@@ -57,6 +56,11 @@ namespace Tent.Data
         string cacheKey;
         int cacheSeconds;
 
+        public Database Sproc(string name) {
+            query.Sproc(name);
+            return this;
+        }
+
         public List<T> Select<T>(string sql = null, params object[] parameters) {
         // get from cache
             if (cacheKey != null) {
@@ -69,13 +73,15 @@ namespace Tent.Data
             if (sql != null)
                 query.Sql(sql);
             
-            var parameterNames = getParameterNamesFromSql(query.Sql());
-            if (parameterNames.Count > 0) {
-                if (parameters.Length > 0) {
-                    if (parameters.Length != parameterNames.Count)
-                        throw new System.Exception($"Parameter name and value counts are not equal. Parameter name count: {parameterNames.Count}, Parameter value count: {parameters.Length}");
-                    for (var i = 0; i < parameters.Length; i++)
-                        query.Parameter(parameterNames[i], parameters[i]);
+            if (!query.IsSproc) {
+                var parameterNames = getParameterNamesFromSql(query.Sql());
+                if (parameterNames.Count > 0) {
+                    if (parameters.Length > 0) {
+                        if (parameters.Length != parameterNames.Count)
+                            throw new System.Exception($"Parameter name and value counts are not equal. Parameter name count: {parameterNames.Count}, Parameter value count: {parameters.Length}");
+                        for (var i = 0; i < parameters.Length; i++)
+                            query.Parameter(parameterNames[i], parameters[i]);
+                    }
                 }
             }
 
@@ -106,10 +112,13 @@ namespace Tent.Data
         // get from database
             if (sql != null)
                 query.Sql(sql);
-            var parameterNames = getParameterNamesFromSql(query.Sql());
-            if (parameterNames.Count > 0)
-                for (var i = 0; i < parameters.Length; i++)
-                    query.Parameter(parameterNames[i], parameters[i]);
+            
+            if (!query.IsSproc) {
+                var parameterNames = getParameterNamesFromSql(query.Sql());
+                if (parameterNames.Count > 0)
+                    for (var i = 0; i < parameters.Length; i++)
+                        query.Parameter(parameterNames[i], parameters[i]);
+            }
             var item = query.SelectOne<T>();
 
         // set cache

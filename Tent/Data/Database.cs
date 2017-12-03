@@ -8,7 +8,7 @@ namespace Tent.Data
     {
         T Select<T>(int id);
         List<T> Select<T>(string sql, params object[] parameters);
-        ISproc Sproc(string name);
+        //IDatabase Sproc(string name);
         int Insert<T>(T obj);
         int Update<T>(T obj);
         int Delete<T>(int id);
@@ -16,21 +16,8 @@ namespace Tent.Data
     
     public partial class Database : IDatabase
     {
-        //public Database(string connectionString) {
-        //    this.connectionString = connectionString;
-        //}
-
-        //string connectionString;
-
-        public ISproc Sproc(string name) {
-            var connectionFactory = new SqlConnectionFactory();
-            var reader = new Reader();
-            return new Sproc(connectionFactory, reader, name);
-        }
-
         /// <summary>Insert object into datbase. Returns id.</summary>
         public int Insert<T>(T instance) {
-            //var connection = new SqlConnection(connectionString);
             var connection = connectionFactory.Create();
             SqlCommand command = null;
             int rowsAffected = 0;

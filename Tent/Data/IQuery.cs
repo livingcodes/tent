@@ -13,7 +13,9 @@ namespace Tent.Data
 
         IQuery Sql(string sql);
         IQuery Parameter(string name, object value);
+        IQuery Sproc(string name);
 
+        bool IsSproc { get; }
         string Sql();
     }
 }

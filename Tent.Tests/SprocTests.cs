@@ -48,6 +48,15 @@ namespace Tent.Tests
             Assert.IsTrue(post.Id >= 1);
         }
 
+        [TestMethod]
+        public void CacheSproc() {
+            var postList = db.Sproc("GetPostsByDateCreated")
+                .Cache("cached")
+                .Parameter("@DateCreated", DateTime.Now.AddDays(-10))
+                .Select<Post>();
+            Assert.IsTrue(postList.Count > 0);
+        }
+
         class Post
         {
             public Post() {

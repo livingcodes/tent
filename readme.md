@@ -2,14 +2,21 @@
 
 # Getting Started
 * set connection string
+```
+public class ConnectionFactory : IConnectionFactory
+{
+	public IDbConnection Create() {
+		return new SqlConnection(connectionString);
+	}
+}
+```
 
 # To Do
+* Select value type DateTime (string and int work)
+* Handle null datetime
 * Configuration to insert or update properties and/or fields
 * Map columns to properties with different names
-* Select value type (string, int, DateTime)
 * Cache class properties
-* Cache return result
-* Handle null datetime
 * Return tuple var p = db.Select<Post, (string Title, string Html)>(post.Id);
 * Return multiple classes from single query
 * Log queries and exceptions
