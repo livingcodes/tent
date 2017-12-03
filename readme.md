@@ -14,9 +14,17 @@ public class ConnectionFactory : IConnectionFactory
 # To Do
 * Select value type DateTime (string and int work)
 * Handle null datetime
+* Cache class properties
 * Configuration to insert or update properties and/or fields
 * Map columns to properties with different names
-* Cache class properties
-* Return tuple var p = db.Select<Post, (string Title, string Html)>(post.Id);
+* Start, commit and rollback transaction
+* Share connection
 * Return multiple classes from single query
+* Async select
+* Return tuple var p = db.Select<Post, (string Title, string Html)>(post.Id);
 * Log queries and exceptions
+* Log long running queries
+* Paging
+* Events ??? open connection event, close connection event, long running query event
+* Support different data providers (like postgres, mysql, memory)
+* Imagine: intellisense for inline sql (for syntax and table and column names)
