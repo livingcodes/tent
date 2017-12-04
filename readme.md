@@ -12,7 +12,7 @@ public class ConnectionFactory : IConnectionFactory
 ```
 
 # To Do
-* Handle null datetime
+* Handle nullable value types datetime
 * Cache class properties
 * Configuration to insert or update properties and/or fields
 * Map columns to properties with different names

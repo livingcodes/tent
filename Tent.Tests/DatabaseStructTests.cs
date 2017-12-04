@@ -20,6 +20,7 @@ namespace Tent.Tests
                     Score FLOAT,
                     AdRevenue DECIMAL(13, 3),
                     Length BIGINT,
+                    IsActive BIT,
 	                PublishDate DATETIME
                 )";
             db.Execute(sql);
@@ -29,7 +30,8 @@ namespace Tent.Tests
                 Score = 9876.12345,
                 PublishDate = new DateTime(2018, 1, 1),
                 AdRevenue = 80.21m,
-                Length = 123456789
+                Length = 123456789,
+                IsActive = true
             };
             db.Insert(actual);
         }
@@ -142,6 +144,33 @@ namespace Tent.Tests
             var post = db.Select<Post>(1);
         }
 
+        [TestMethod]
+        public void SelectBoolList() {
+            var isActive = db.Select<bool>("select isactive from posts");
+            Assert.IsTrue(isActive[0] == true);
+        }
+
+        [TestMethod]
+        public void SelectBool() {
+            var isActive = db.SelectOne<bool>("select top 1 isactive from posts");
+            Assert.IsTrue(isActive == true);
+        }
+
+        [TestMethod]
+        public void SelectFalse() {
+            db.Insert(new Post() {
+                Html = "a",
+                AdRevenue = 1m,
+                IsActive = false,
+                Length = 2,
+                Score = 3,
+                PublishDate = new DateTime(2017, 1, 1)
+            });
+            var isActive = db.Select<bool>("select isactive from posts");
+            Assert.IsTrue(isActive[1] == false);
+            Assert.IsFalse(isActive[1] == true);
+        }
+
         public struct Post
         {
             public int Id { get; set; }
@@ -149,6 +178,7 @@ namespace Tent.Tests
             public double Score { get; set; }
             public decimal AdRevenue { get; set; }
             public long Length { get; set; }
+            public bool IsActive { get; set; }
             public DateTime PublishDate { get; set; }
         }
     }

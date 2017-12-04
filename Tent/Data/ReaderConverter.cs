@@ -76,7 +76,8 @@ namespace Tent.Data
             ||  typeof(T) == typeof(DateTime)
             ||  typeof(T) == typeof(double)
             ||  typeof(T) == typeof(decimal)
-            ||  typeof(T) == typeof(long))
+            ||  typeof(T) == typeof(long)
+            ||  typeof(T) == typeof(bool))
                 return new ReaderToValueList<T>().Convert(reader);
             else if (typeof(T).IsClass)
                 return new ReaderToClassList<T>().Convert(reader);
@@ -146,7 +147,8 @@ namespace Tent.Data
             ||  typeof(T) == typeof(DateTime)
             ||  typeof(T) == typeof(double)
             ||  typeof(T) == typeof(decimal)
-            ||  typeof(T) == typeof(long))
+            ||  typeof(T) == typeof(long)
+            ||  typeof(T) == typeof(bool))
                 return new ReaderToValue<T>().Convert(reader);
             if (typeof(T).IsClass)
                 return new ReaderToClass<T>().Convert(reader);
