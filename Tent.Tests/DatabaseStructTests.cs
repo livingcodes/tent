@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Data.SqlTypes;
 
 namespace Tent.Tests
 {
@@ -19,7 +20,7 @@ namespace Tent.Tests
                     Score FLOAT,
                     AdRevenue DECIMAL(13, 3),
                     Length BIGINT,
-	                PublishDate DATETIME NOT NULL
+	                PublishDate DATETIME
                 )";
             db.Execute(sql);
 
@@ -117,6 +118,28 @@ namespace Tent.Tests
         public void SelectLong() {
             var length = db.SelectOne<long>("select top 1 [length] from posts");
             Assert.IsTrue(length == actual.Length);
+        }
+
+        // can't save c# date that is outside sql server date range
+        [TestMethod, ExpectedException(typeof(SqlTypeException))]
+        public void UpdateDateOutsideRange() {
+            // 0001-01-01 is the c# min
+            // SQL only goes back to 1753 and to 9999
+            // so c# can have values that can't be stored in sql server
+            actual.Id = 1;
+            actual.PublishDate = new DateTime(); 
+            db.Update(actual);
+        }
+
+        // can't select and convert sql server null to c# value type
+        // 'System.DBNull' cannot be converted to type 'System.DateTime'
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public void CannotConvertDbNullToNonnullableValueType() {
+            db.Execute("truncate table posts");
+            // leave publish date null
+            db.Execute("insert into posts (html,score,adrevenue,[length]) values ('abc',1,2,3)");
+            // trying to select null date into non-nullable date property
+            var post = db.Select<Post>(1);
         }
 
         public struct Post

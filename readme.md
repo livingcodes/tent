@@ -12,7 +12,6 @@ public class ConnectionFactory : IConnectionFactory
 ```
 
 # To Do
-* Select value type DateTime (string and int work)
 * Handle null datetime
 * Cache class properties
 * Configuration to insert or update properties and/or fields
