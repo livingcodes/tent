@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using Tent.Data;
 
 namespace Tent.Tests
 {
@@ -17,12 +16,14 @@ namespace Tent.Tests
                 CREATE TABLE Posts (
 	                Id INT PRIMARY KEY IDENTITY(1, 1),
 	                Html VARCHAR(MAX) NOT NULL,
+                    Score FLOAT,
 	                PublishDate DATETIME NOT NULL
                 )";
             db.Execute(sql);
 
             actual = new Post() {
                 Html = "abc",
+                Score = 9876.12345,
                 PublishDate = new DateTime(2018, 1, 1)
             };
             db.Insert(actual);
@@ -78,10 +79,23 @@ namespace Tent.Tests
             Assert.IsTrue(date == actual.PublishDate);
         }
 
+        [TestMethod]
+        public void SelectDoubleList() {
+            var numberList = db.Select<double>("select score from posts");
+            Assert.IsTrue(numberList[0] == actual.Score);
+        }
+
+        [TestMethod]
+        public void SelectDouble() {
+            var number = db.SelectOne<double>("select top 1 score from posts");
+            Assert.IsTrue(number == actual.Score);
+        }
+
         public struct Post
         {
             public int Id { get; set; }
             public string Html { get; set; }
+            public double Score { get; set; }
             public DateTime PublishDate { get; set; }
         }
     }
