@@ -17,6 +17,8 @@ namespace Tent.Tests
 	                Id INT PRIMARY KEY IDENTITY(1, 1),
 	                Html VARCHAR(MAX) NOT NULL,
                     Score FLOAT,
+                    AdRevenue DECIMAL(13, 3),
+                    Length BIGINT,
 	                PublishDate DATETIME NOT NULL
                 )";
             db.Execute(sql);
@@ -24,7 +26,9 @@ namespace Tent.Tests
             actual = new Post() {
                 Html = "abc",
                 Score = 9876.12345,
-                PublishDate = new DateTime(2018, 1, 1)
+                PublishDate = new DateTime(2018, 1, 1),
+                AdRevenue = 80.21m,
+                Length = 123456789
             };
             db.Insert(actual);
         }
@@ -91,11 +95,37 @@ namespace Tent.Tests
             Assert.IsTrue(number == actual.Score);
         }
 
+        [TestMethod]
+        public void SelectDecimalList() {
+            var decimalList = db.Select<decimal>("select adrevenue from posts");
+            Assert.IsTrue(decimalList[0] == actual.AdRevenue);
+        }
+
+        [TestMethod]
+        public void SelectDecimal() {
+            var adRevenue = db.SelectOne<decimal>("select top 1 adrevenue from posts");
+            Assert.IsTrue(adRevenue == actual.AdRevenue);
+        }
+
+        [TestMethod]
+        public void SelectLongList() {
+            var lengthList = db.Select<long>("select [length] from posts");
+            Assert.IsTrue(lengthList[0] == actual.Length);
+        }
+
+        [TestMethod]
+        public void SelectLong() {
+            var length = db.SelectOne<long>("select top 1 [length] from posts");
+            Assert.IsTrue(length == actual.Length);
+        }
+
         public struct Post
         {
             public int Id { get; set; }
             public string Html { get; set; }
             public double Score { get; set; }
+            public decimal AdRevenue { get; set; }
+            public long Length { get; set; }
             public DateTime PublishDate { get; set; }
         }
     }
