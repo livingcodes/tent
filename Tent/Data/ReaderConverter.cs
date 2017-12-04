@@ -72,7 +72,8 @@ namespace Tent.Data
     {
         public List<T> Convert(IDataReader reader) {
             if (typeof(T) == typeof(string)
-            ||  typeof(T) == typeof(int)) // todo: datetime, double, decimal, long
+            ||  typeof(T) == typeof(int)
+            ||  typeof(T) == typeof(DateTime)) // todo: double, decimal, long
                 return new ReaderToValueList<T>().Convert(reader);
             else if (typeof(T).IsClass)
                 return new ReaderToClassList<T>().Convert(reader);
@@ -138,7 +139,8 @@ namespace Tent.Data
     {
         public T Convert(IDataReader reader) {
             if (typeof(T) == typeof(string)
-            ||  typeof(T) == typeof(int))
+            ||  typeof(T) == typeof(int)
+            ||  typeof(T) == typeof(DateTime))
                 return new ReaderToValue<T>().Convert(reader);
             if (typeof(T).IsClass)
                 return new ReaderToClass<T>().Convert(reader);
