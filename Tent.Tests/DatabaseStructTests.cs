@@ -133,15 +133,19 @@ namespace Tent.Tests
             db.Update(actual);
         }
 
-        // can't select and convert sql server null to c# value type
-        // 'System.DBNull' cannot be converted to type 'System.DateTime'
-        [TestMethod, ExpectedException(typeof(ArgumentException))]
-        public void CannotConvertDbNullToNonnullableValueType() {
+        [TestMethod]
+        public void ConvertNullColumnToCSharpValue() {
             db.Execute("truncate table posts");
-            // leave publish date null
-            db.Execute("insert into posts (html,score,adrevenue,[length]) values ('abc',1,2,3)");
+            // leave publish date and isactive null
+            db.Execute("insert into posts (html,score,adrevenue) values ('abc',1,2)");
             // trying to select null date into non-nullable date property
             var post = db.Select<Post>(1);
+            // if bit column used for c# bool is null then it is converted to c# false
+            assert(post.IsActive == false);
+            // if date column is dbnull then it is converted to c# minvalue
+            assert(post.PublishDate == DateTime.MinValue);
+            // if number column is null then it is converted to zero
+            assert(post.Length == 0);
         }
 
         [TestMethod]

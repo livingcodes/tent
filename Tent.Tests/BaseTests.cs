@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Tent.Data;
 
 namespace Tent.Tests
@@ -32,5 +33,9 @@ namespace Tent.Tests
 
         protected IConfigurationRoot configuration;
         protected Database db;
+
+        protected void assert(bool condition) {
+            Assert.IsTrue(condition);
+        }
     }
 }

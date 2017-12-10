@@ -99,8 +99,13 @@ namespace Tent.Data
             while (reader.Read()) {
                 item = Activator.CreateInstance<T>();
                 foreach (var property in properties) {
-                    if (columns.Contains(property.Name))
-                        property.SetValue(item, reader[property.Name]);
+                    if (columns.Contains(property.Name)) {
+                        object value = reader[property.Name];
+                        // if dbnull change to c# null
+                        if (value == DBNull.Value)
+                            value = null;
+                        property.SetValue(item, value);
+                    }
                 }
                 break;
             }
@@ -129,8 +134,13 @@ namespace Tent.Data
             var properties = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
             while (reader.Read()) {
                 foreach (var property in properties) {
-                    if (columns.Contains(property.Name))
-                        property.SetValue(boxed, reader[property.Name]);
+                    if (columns.Contains(property.Name)) {
+                        object value = reader[property.Name];
+                        // if dbnull change to c# null
+                        if (value == DBNull.Value)
+                            value = null;
+                        property.SetValue(boxed, value);
+                    }
                 }
                 item = (T)boxed;
                 break;
