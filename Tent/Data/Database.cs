@@ -25,7 +25,7 @@ namespace Tent.Data
             try {
                 connection.Open();
                 command = (SqlCommand)connection.CreateCommand();
-                ISqlBuilder sqlBuilder = new SqlBuilder<T>(instance, command, this);
+                ISqlBuilder sqlBuilder = new SqlBuilder<T>(instance, command, this, cache);
                 var sql = sqlBuilder.BuildInsertSql();
                 command.CommandText = sql;
                 rowsAffected = command.ExecuteNonQuery();
@@ -46,7 +46,7 @@ namespace Tent.Data
             try {
                 connection.Open();
                 command = (SqlCommand)connection.CreateCommand();
-                ISqlBuilder sqlBuilder = new SqlBuilder<T>(instance, command, this);
+                ISqlBuilder sqlBuilder = new SqlBuilder<T>(instance, command, this, cache);
                 var sql = sqlBuilder.BuildUpdateSql();
                 command.CommandText = sql;
                 rowsAffected = command.ExecuteNonQuery();

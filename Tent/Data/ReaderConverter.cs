@@ -179,16 +179,17 @@ namespace Tent.Data
             return columnNameList;
         }
 
-        public List<string> From(string tableName, IDatabase db) {
+        public List<string> From(string tableName, IDatabase db, ICache cache) {
             // get from cache
-            // var columnNameList = cache.Get<List<string>>($"ColumnsFor{tableName}");
-            // if (columnNameList == null) {
+            var columnNameList = cache.Get<List<string>>($"ColumnsFor{tableName}");
+            if (columnNameList == null) {
                 // get from database
-                var columnNameList = db.Select<string>(
+                columnNameList = db.Select<string>(
                     $@"SELECT COLUMN_NAME FROM Tent.INFORMATION_SCHEMA.COLUMNS
                     WHERE TABLE_NAME = '{tableName}'"
                 );
-            // }
+                cache.Set($"ColumnsFor{tableName}", columnNameList, 60);
+            }
             return columnNameList;
         }
     }

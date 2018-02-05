@@ -10,19 +10,21 @@ namespace Tent.Data
     }
     public class SqlBuilder<T> : ISqlBuilder
     {
-        public SqlBuilder(T instance, SqlCommand command, IDatabase db) {
+        public SqlBuilder(T instance, SqlCommand command, IDatabase db, ICache cache) {
             this.instance = instance;
             this.command = command;
             this.db = db;
+            this.cache = cache;
         }
         T instance;
         SqlCommand command;
         IDatabase db;
+        ICache cache;
 
         public string BuildInsertSql() {
             var tableName = instance.GetType().Name + "s";
             var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-            var tableColumns = new GetColumns().From(tableName, db);
+            var tableColumns = new GetColumns().From(tableName, db, cache);
             var columnNames = "";
             var values = "";
             
@@ -49,7 +51,7 @@ namespace Tent.Data
         public string BuildUpdateSql() {
             var tableName = instance.GetType().Name + "s";
             var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-            var tableColumns = new GetColumns().From(tableName, db);
+            var tableColumns = new GetColumns().From(tableName, db, cache);
             var setters = "";
             var id = "0";
             foreach (var property in properties) {
