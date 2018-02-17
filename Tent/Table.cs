@@ -19,7 +19,7 @@
             Sql = $@"
             IF EXISTS (
                 SELECT * FROM INFORMATION_SCHEMA.TABLES
-                WHERE TABLE_NAME = 'Posts'
+                WHERE TABLE_NAME = '{name}'
             )
                 drop table {name}
             create table {name} (";
@@ -42,10 +42,15 @@
 
         public class Syntax
         {
+            public static string PrimaryKey => " primary key";
+
             public static string Identity(int start, int increment)
                 => $" identity({start},{increment})";
             
             public static string NotNull => " not null";
+
+            public static string Default(string value) => $" default({value})";
+            public static string DefaultGetDate => Default("getdate()");
         }
 
         public class SqlType
@@ -61,6 +66,8 @@
                 => new SqlType($"varchar({numberOfCharacters})");
             public static SqlType VarCharMax 
                 = new SqlType("varchar(max)");
+            public static SqlType DateTime
+                = new SqlType("datetime");
 
             public override string ToString() {
                 return Name;
