@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Tent.Auth
 {
@@ -11,12 +10,12 @@ namespace Tent.Auth
         }
         
         public byte[] AsByteArray { get; }
-        public string AsString { get {
-            if (asString == null)
-                asString = Convert.ToBase64String(AsByteArray);
-            return asString;
-        } }
+
+        public string AsString => asString 
+            ?? (asString = Convert.ToBase64String(AsByteArray));
         string asString;
+
+        public override string ToString() => AsString;
 
         byte[] generate(int size) {
             byte[] salt = new byte[size];

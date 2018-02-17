@@ -22,7 +22,7 @@ namespace Tent.Logic
             if (user == null)
                 return Result.Failure("Email is not registered");
 
-            var inputHash = new Hash(password, user.Salt).Generate();
+            var inputHash = new Hash(password, user.Salt).AsString;
 
             if (user.PasswordHash != inputHash)
                 return Result.Failure("Password incorrect");

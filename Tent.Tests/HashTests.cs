@@ -10,8 +10,8 @@ namespace Tent.Tests
         public void HashStringsMatch() {
             string password = "password";
             var salt = new Salt();
-            var hash1 = new Hash(password, salt.AsByteArray).Generate();
-            var hash2 = new Hash(password, salt.AsByteArray).Generate();
+            var hash1 = new Hash(password, salt.AsByteArray).AsString;
+            var hash2 = new Hash(password, salt.AsByteArray).AsString;
             Assert.IsTrue(hash1 == hash2);
         }
     }

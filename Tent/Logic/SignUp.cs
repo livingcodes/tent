@@ -15,8 +15,9 @@ namespace Tent.Logic
         Pack db;
 
         public IResult Execute() {
+            // todo: check if already exists
             var salt = new Salt();
-            var passwordHash = new Hash(password, salt.AsByteArray).Generate();
+            var passwordHash = new Hash(password, salt.AsByteArray).AsString;
             var id = db.Insert(new User() {
                 Email = email,
                 PasswordHash = passwordHash,
