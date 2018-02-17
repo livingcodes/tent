@@ -37,12 +37,14 @@ namespace Tent.Pages.admin
             if (!ModelState.IsValid)
                 return Page();
             
-            // todo: login using database
-            if (Login.Email == "admin@tent.com"
-            && Login.Password == "password")
-                return RedirectToPage("/Index");
-            
-            return Page();
+            var login = new Logic.Login(Login.Email, Login.Password);
+            var result = login.Execute();
+            if (result.Failed) {
+                ModelState.AddModelError("Login", result.ErrorMessage);
+                return Page();
+            }
+
+            return RedirectToPage("/Index");
         }
     }
 }

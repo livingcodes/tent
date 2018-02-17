@@ -5,6 +5,8 @@
 }
 
 <form method="post">
+    @Html.ValidationSummary()
+
     <input asp-for="Login.Email" />
     <span asp-validation-for="Login.Email" class="text-danger"></span>
     <br>
