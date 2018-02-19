@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +16,7 @@ namespace Tent.Pages.admin
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }
-    public class LoginModel : PageModel
+    public class LoginModel : AuthenticatedPageModel
     {
         public LoginModel(ILogger<LoginModel> logger) {
             this.logger = logger;
@@ -46,7 +45,7 @@ namespace Tent.Pages.admin
             }
             
             var user = result.Value;
-            setCookie("user", user.Id.ToString());
+            SetUserCookie(user);
 
             return RedirectToPage("/Index");
         }
