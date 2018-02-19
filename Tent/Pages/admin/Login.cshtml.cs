@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
@@ -43,8 +44,21 @@ namespace Tent.Pages.admin
                 ModelState.AddModelError("Login", result.ErrorMessage);
                 return Page();
             }
+            
+            var user = result.Value;
+            setCookie("user", user.Id.ToString());
 
             return RedirectToPage("/Index");
+        }
+
+        void setCookie(string key, string value) {
+            Response.Cookies.Append(
+                key: "user",
+                value: value,
+                options: new Microsoft.AspNetCore.Http.CookieOptions() {
+                    Expires = DateTime.Now.AddYears(1)
+                }
+            );
         }
     }
 }

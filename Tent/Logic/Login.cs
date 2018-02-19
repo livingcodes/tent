@@ -14,25 +14,26 @@ namespace Tent.Logic
         string email, password;
         Pack db;
 
-        public IResult Execute() {
+        public IResult<User> Execute() {
             var user = db.Sql("select * from users where email = @email")
                 .Parameter("@email", email)
                 .SelectOne<User>();
             
             if (user == null)
-                return Result.Failure("Email is not registered");
+                return Result<User>.Failure(null, "Email is not registered");
 
             var inputHash = new Hash(password, user.Salt).AsString;
 
             if (user.PasswordHash != inputHash)
-                return Result.Failure("Password incorrect");
-                
-            return Result.Success;
+                return Result<User>.Failure(user, "Password incorrect");
+            
+            return Result<User>.Success(user);
         }
     }
 
     public class User
     {
+        public int Id { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public string Salt { get; set; }
@@ -42,6 +43,11 @@ namespace Tent.Logic
     {
         bool Failed { get; }
         string ErrorMessage { get; }
+    }
+
+    public interface IResult<T> : IResult
+    {
+        T Value { get; }
     }
 
     public class Result : IResult
@@ -54,8 +60,20 @@ namespace Tent.Logic
         public string ErrorMessage { get; }
 
         public static readonly Result Success = new Result();
-        public static Result Failure(string errorMessage) {
-            return new Result(errorMessage);
+        public static Result Failure(string errorMessage) =>
+            new Result(errorMessage);
+    }
+
+    public class Result<T> : Result, IResult<T>
+    {
+        public Result(T value, string errorMessage = null) 
+        : base(errorMessage) {
+            Value = value;
         }
+        public T Value { get; }
+
+        public new static Result<T> Success(T value) => new Result<T>(value);
+        public static Result<T> Failure(T value, string errorMessage) =>
+            new Result<T>(value, errorMessage);
     }
 }
