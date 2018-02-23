@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
@@ -16,9 +15,12 @@ namespace Tent.Pages.admin
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }
-    public class LoginModel : AuthenticatedPageModel
+    public class LoginModel : AuthenticatedPage
     {
-        public LoginModel(ILogger<LoginModel> logger) {
+        public LoginModel(
+            ILogger<LoginModel> logger,
+            Logic.ICryptographer cryptographer
+        ) : base(cryptographer) {
             this.logger = logger;
         }
 
@@ -37,8 +39,7 @@ namespace Tent.Pages.admin
             if (!ModelState.IsValid)
                 return Page();
             
-            var login = new Logic.Login(Login.Email, Login.Password);
-            var result = login.Execute();
+            var result = new Logic.Login(Login.Email, Login.Password).Execute();
             if (result.Failed) {
                 ModelState.AddModelError("Login", result.ErrorMessage);
                 return Page();
@@ -48,16 +49,6 @@ namespace Tent.Pages.admin
             SetUserCookie(user);
 
             return RedirectToPage("/Index");
-        }
-
-        void setCookie(string key, string value) {
-            Response.Cookies.Append(
-                key: "user",
-                value: value,
-                options: new Microsoft.AspNetCore.Http.CookieOptions() {
-                    Expires = DateTime.Now.AddYears(1)
-                }
-            );
         }
     }
 }
