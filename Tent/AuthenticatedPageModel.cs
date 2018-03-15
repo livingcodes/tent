@@ -16,10 +16,10 @@ namespace Tent
             if (cookie == null)
                 return new UserCookie();
 
-            var unencryptedCookie = cryptographer.Decrypt(cookie);
-
             UserCookie deserialized = null;
             try {
+                var unencryptedCookie = cryptographer.Decrypt(cookie);
+
                 deserialized = Newtonsoft.Json.JsonConvert.
                     DeserializeObject<UserCookie>(unencryptedCookie);
             } catch (Exception ex) {

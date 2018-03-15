@@ -10,6 +10,7 @@ namespace Tent.Logic
 
     public class Cryptographer : ICryptographer
     {
+        // note: encrypted value expires and then can't be decrypted
         public Cryptographer(IDataProtectionProvider provider) =>
             protector = provider.CreateProtector("encrypt-cookie");
         
