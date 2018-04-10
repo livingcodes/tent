@@ -1,22 +1,22 @@
-using Microsoft.AspNetCore.Mvc;
 using System;
+using Tent.Data;
 
 namespace Tent.Pages.blog
 {
     public class PostPage : BasePage
     {
         public void OnGet() {
-            Post = new PostModel {
-                Title = "Simple Data Access",
-                Body = "Check it out...",
-                PublishDate = DateTime.Now
-            };
+            var db = new Pack();
+            var posts = db.Select<Post>(
+                @"SELECT TOP 1 * FROM Posts 
+                ORDER BY PublishDate DESC");
+            Post = posts[0];
         }
 
-        public PostModel Post { get; set; }
+        public Post Post { get; set; }
     }
 
-    public class PostModel
+    public class Post
     {
         public int Id { get; set; }
         public string Title { get; set; }
