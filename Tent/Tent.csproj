@@ -10,5 +10,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\admin\" />
+    <Folder Include="Pages\blog\" />
   </ItemGroup>
 </Project>
