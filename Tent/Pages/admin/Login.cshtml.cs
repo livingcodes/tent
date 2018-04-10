@@ -15,16 +15,16 @@ namespace Tent.Pages.admin
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }
-    public class LoginModel : AuthenticatedPage
+    public class LoginPage : AuthenticatedPage
     {
-        public LoginModel(
-            ILogger<LoginModel> logger,
+        public LoginPage(
+            ILogger<LoginPage> logger,
             Logic.ICryptographer cryptographer
         ) : base(cryptographer) {
             this.logger = logger;
         }
 
-        ILogger<LoginModel> logger;
+        ILogger<LoginPage> logger;
 
         public void OnGet() {
             ViewData["Title"] = "Login";

@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Tent.Logic;
+﻿using Tent.Logic;
 
 namespace Tent.Pages
 {
