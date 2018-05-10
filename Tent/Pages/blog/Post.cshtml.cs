@@ -7,10 +7,21 @@ namespace Tent.Pages.blog
     {
         public void OnGet() {
             var db = new Pack();
-            var posts = db.Select<Post>(
-                @"SELECT TOP 1 * FROM Posts 
-                ORDER BY PublishDate DESC");
-            Post = posts[0];
+
+            if (!Request.QueryString.HasValue) {
+                var posts = db.Select<Post>(
+                    @"SELECT TOP 1 * FROM Posts 
+                    ORDER BY PublishDate DESC");
+                Post = posts[0];
+            } else {
+                var queryString = Request.QueryString.Value;
+                var id = queryString.Split('=')[1];
+                Post = db.SelectOne<Post>(
+                    @"SELECT * FROM Posts
+                    WHERE Id = @Id",
+                    id
+                );
+            }
         }
 
         public Post Post { get; set; }

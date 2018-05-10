@@ -4,6 +4,6 @@
     <h1>@Model.Post.Title</h1>
     <p>@Model.Post.PublishDate.ToString("M/d/yy")</p>
     <p>
-        @Model.Post.Body
+        @Html.Raw(Model.Post.Body)
     </p>
 }
