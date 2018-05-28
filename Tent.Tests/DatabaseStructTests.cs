@@ -11,10 +11,10 @@ namespace Tent.Tests
             var sql = @"
                 IF EXISTS (
                     SELECT * FROM INFORMATION_SCHEMA.TABLES
-                    WHERE TABLE_NAME = 'Posts'
+                    WHERE TABLE_NAME = 'Post'
                 )
-                    DROP TABLE Posts
-                CREATE TABLE Posts (
+                    DROP TABLE Post
+                CREATE TABLE Post (
 	                Id INT PRIMARY KEY IDENTITY(1, 1),
 	                Html VARCHAR(MAX) NOT NULL,
                     Score FLOAT,
@@ -39,86 +39,86 @@ namespace Tent.Tests
 
         [TestMethod]
         public void SelectToStructList() {
-            var posts = db.Select<Post>("select * from posts");
+            var posts = db.Select<Post>("select * from post");
             Assert.IsTrue(posts[0].Id == 1);
         }
 
         [TestMethod]
         public void SelectToStruct() {
-            var post = db.SelectOne<Post>("select top 1 * from posts");
+            var post = db.SelectOne<Post>("select top 1 * from post");
             Assert.IsTrue(post.Id == 1);
             Assert.IsTrue(post.Html == "abc");
         }
 
         [TestMethod]
         public void SelectStringList() {
-            var htmlList = db.Select<string>("select html from posts");
+            var htmlList = db.Select<string>("select html from post");
             Assert.IsTrue(htmlList[0] == "abc");
         }
 
         [TestMethod]
         public void SelectString() {
-            var html = db.SelectOne<string>("select top 1 html from posts");
+            var html = db.SelectOne<string>("select top 1 html from post");
             Assert.IsTrue(html == "abc");
         }
 
         [TestMethod]
         public void SelectIntList() {
-            var id = db.Select<int>("select id from posts");
+            var id = db.Select<int>("select id from post");
             Assert.IsTrue(id[0] == 1);
         }
 
         [TestMethod]
         public void SelectInt() {
-            var id = db.SelectOne<int>("select top 1 id from posts");
+            var id = db.SelectOne<int>("select top 1 id from post");
             Assert.IsTrue(id == 1);
         }
 
         [TestMethod]
         public void SelectDateTimeList() {
-            var dates = db.Select<DateTime>("select publishdate from posts");
+            var dates = db.Select<DateTime>("select publishdate from post");
             Assert.IsTrue(dates[0] == actual.PublishDate);
         }
 
         [TestMethod]
         public void SelectDateTime() {
-            var date = db.SelectOne<DateTime>("select top 1 publishdate from posts");
+            var date = db.SelectOne<DateTime>("select top 1 publishdate from post");
             Assert.IsTrue(date == actual.PublishDate);
         }
 
         [TestMethod]
         public void SelectDoubleList() {
-            var numberList = db.Select<double>("select score from posts");
+            var numberList = db.Select<double>("select score from post");
             Assert.IsTrue(numberList[0] == actual.Score);
         }
 
         [TestMethod]
         public void SelectDouble() {
-            var number = db.SelectOne<double>("select top 1 score from posts");
+            var number = db.SelectOne<double>("select top 1 score from post");
             Assert.IsTrue(number == actual.Score);
         }
 
         [TestMethod]
         public void SelectDecimalList() {
-            var decimalList = db.Select<decimal>("select adrevenue from posts");
+            var decimalList = db.Select<decimal>("select adrevenue from post");
             Assert.IsTrue(decimalList[0] == actual.AdRevenue);
         }
 
         [TestMethod]
         public void SelectDecimal() {
-            var adRevenue = db.SelectOne<decimal>("select top 1 adrevenue from posts");
+            var adRevenue = db.SelectOne<decimal>("select top 1 adrevenue from post");
             Assert.IsTrue(adRevenue == actual.AdRevenue);
         }
 
         [TestMethod]
         public void SelectLongList() {
-            var lengthList = db.Select<long>("select [length] from posts");
+            var lengthList = db.Select<long>("select [length] from post");
             Assert.IsTrue(lengthList[0] == actual.Length);
         }
 
         [TestMethod]
         public void SelectLong() {
-            var length = db.SelectOne<long>("select top 1 [length] from posts");
+            var length = db.SelectOne<long>("select top 1 [length] from post");
             Assert.IsTrue(length == actual.Length);
         }
 
@@ -135,9 +135,9 @@ namespace Tent.Tests
 
         [TestMethod]
         public void ConvertNullColumnToCSharpValue() {
-            db.Execute("truncate table posts");
+            db.Execute("truncate table post");
             // leave publish date and isactive null
-            db.Execute("insert into posts (html,score,adrevenue) values ('abc',1,2)");
+            db.Execute("insert into post (html,score,adrevenue) values ('abc',1,2)");
             // trying to select null date into non-nullable date property
             var post = db.Select<Post>(1);
             // if bit column used for c# bool is null then it is converted to c# false
@@ -150,13 +150,13 @@ namespace Tent.Tests
 
         [TestMethod]
         public void SelectBoolList() {
-            var isActive = db.Select<bool>("select isactive from posts");
+            var isActive = db.Select<bool>("select isactive from post");
             Assert.IsTrue(isActive[0] == true);
         }
 
         [TestMethod]
         public void SelectBool() {
-            var isActive = db.SelectOne<bool>("select top 1 isactive from posts");
+            var isActive = db.SelectOne<bool>("select top 1 isactive from post");
             Assert.IsTrue(isActive == true);
         }
 
@@ -170,7 +170,7 @@ namespace Tent.Tests
                 Score = 3,
                 PublishDate = new DateTime(2017, 1, 1)
             });
-            var isActive = db.Select<bool>("select isactive from posts");
+            var isActive = db.Select<bool>("select isactive from post");
             Assert.IsTrue(isActive[1] == false);
             Assert.IsFalse(isActive[1] == true);
         }

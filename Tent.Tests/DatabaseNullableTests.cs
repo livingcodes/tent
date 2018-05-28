@@ -10,10 +10,10 @@ namespace Tent.Tests
             var sql = @"
                 IF EXISTS (
                     SELECT * FROM INFORMATION_SCHEMA.TABLES
-                    WHERE TABLE_NAME = 'Posts'
+                    WHERE TABLE_NAME = 'Post'
                 )
-                    DROP TABLE Posts
-                CREATE TABLE Posts (
+                    DROP TABLE Post
+                CREATE TABLE Post (
 	                Id INT PRIMARY KEY IDENTITY(1, 1),
 	                Html VARCHAR(MAX) NOT NULL,
                     OptIn BIT,
@@ -48,7 +48,7 @@ namespace Tent.Tests
 
         [TestMethod]
         public void GetNullableBoolNull() {
-            db.Execute("insert into posts (html) values ('abc')");
+            db.Execute("insert into post (html) values ('abc')");
 
             var post = db.Select<Post>(1);
             assert(post.OptIn.HasValue == false);

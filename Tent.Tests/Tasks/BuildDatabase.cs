@@ -1,7 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Tent.Pages.blog;
 using static Tent.Table;
 
@@ -12,7 +10,7 @@ namespace Tent.Tests.Tasks
     {
         [TestMethod]
         public void CreatePostsTable() {
-            var sql = new Table("Posts")
+            var sql = new Table("Post")
                 .AddColumn("Id", SqlType.Int, Syntax.Identity(1, 1))
                 .AddColumn("Title", SqlType.VarChar(100), Syntax.NotNull)
                 .AddColumn("Body", SqlType.VarCharMax, Syntax.NotNull)

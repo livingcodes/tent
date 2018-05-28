@@ -27,7 +27,8 @@ namespace Tent.Tests
                 new Reader(), 
                 new SerializedCached(
                     distributedCache
-                )
+                ),
+                new TableName_ClassName()
             );
         }
 

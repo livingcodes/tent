@@ -21,8 +21,8 @@
                 SELECT * FROM INFORMATION_SCHEMA.TABLES
                 WHERE TABLE_NAME = '{name}'
             )
-                drop table {name}
-            create table {name} (";
+                drop table [{name}]
+            create table [{name}] (";
         }
 
         public string Name, Sql;

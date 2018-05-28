@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Tent.Data
 {
@@ -8,15 +9,18 @@ namespace Tent.Data
         public Database(
             IConnectionFactory connectionFactory, 
             IRead reader,
-            ICache cache
+            ICache cache,
+            ITableName tableName = null
         ) {
             this.reader = reader;
             this.connectionFactory = connectionFactory;
             this.cache = cache;
+            this.tableName = tableName ?? new TableName_ClassName();
         }
         IConnectionFactory connectionFactory;
         IRead reader;
         ICache cache;
+        ITableName tableName;
 
         IQuery query { get {
             if (_query == null)
@@ -59,6 +63,22 @@ namespace Tent.Data
         public Database Sproc(string name) {
             query.Sproc(name);
             return this;
+        }
+
+        public List<T> Where<T>(string sql = null, params object[] parameters) {
+            var tableName = this.tableName.Get<T>();
+            var sqlStart = $"SELECT * FROM [{tableName}] WHERE ";
+            sql = sql ?? query.Sql();
+            sql = sqlStart + sql;
+            return Select<T>(sql, parameters);
+        }
+
+        public T WhereOne<T>(string sql = null, params object[] parameters) {
+            var tableName = this.tableName.Get<T>();
+            var sqlStart = $"SELECT * FROM [{tableName}] WHERE ";
+            sql = sql ?? query.Sql();
+            sql = sqlStart + sql;
+            return SelectOne<T>(sql, parameters);
         }
 
         public List<T> Select<T>(string sql = null, params object[] parameters) {
@@ -130,7 +150,7 @@ namespace Tent.Data
         }
 
         public T Select<T>(int id) {
-            return SelectOne<T>($"select * from {typeof(T).Name}s where id = @id", id);
+            return SelectOne<T>($"select * from {this.tableName.Get<T>()} where id = @id", id);
         }
 
         public int Execute(string sql = null, params object[] parameters) {
@@ -177,8 +197,29 @@ namespace Tent.Data
             this.db = db;
         }
         Database db;
-        public void DropTable(string tableName) {
+        public void DropTable(string tableName) =>
             db.Select<int>($"drop table {tableName}");
+        
+        public void Truncate(string tableName) =>
+            db.Execute($"truncate table {tableName}");
+        
+        public void CreateProcedure(string name, string sql) =>
+            CreateProcedure(name, new List<string>(), sql);
+
+        public void CreateProcedure(string name, IEnumerable<string> parameters, string sql) {
+            db.Execute($"DROP PROCEDURE IF EXISTS {name}");
+
+            string _sql = $"CREATE PROCEDURE {name} ";
+            if (parameters.Count() > 0) {
+                _sql += "(";
+                foreach (var parameter in parameters)
+                    _sql += parameter + ", ";
+                _sql = _sql.Remove(_sql.Length - 2);
+                _sql += ") ";
+            }
+            _sql += $"AS BEGIN {sql} END";
+
+            db.Execute(_sql);
         }
     }
 }

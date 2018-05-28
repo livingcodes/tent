@@ -41,7 +41,7 @@ namespace Tent.Tests.Logic
 
         // todo: have duplicate .sql file that could be deleted now that table is created in code
         void createUserTable() {
-            var sql = new Table("Users")
+            var sql = new Table("User")
                 .AddColumn("Id", SqlType.Int, Syntax.PrimaryKey + Syntax.Identity(1, 1))
                 .AddColumn("Email", SqlType.VarChar(100), Syntax.NotNull)
                 .AddColumn("PasswordHash", SqlType.VarChar(255), Syntax.NotNull)

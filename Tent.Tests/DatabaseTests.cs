@@ -13,10 +13,10 @@ namespace Tent.Tests
             var sql = @"
                 IF EXISTS (
                     SELECT * FROM INFORMATION_SCHEMA.TABLES
-                    WHERE TABLE_NAME = 'Posts'
+                    WHERE TABLE_NAME = 'Post'
                 )
-                    DROP TABLE Posts
-                CREATE TABLE Posts (
+                    DROP TABLE Post
+                CREATE TABLE Post (
 	                Id INT PRIMARY KEY IDENTITY(1, 1),
 	                Title VARCHAR(100) NOT NULL,
 	                Html VARCHAR(MAX) NOT NULL,
@@ -32,7 +32,7 @@ namespace Tent.Tests
             db.Insert(post);
 
             // verify insert (query sql)
-            var posts = db.Select<Post>("select * from posts");
+            var posts = db.Select<Post>("select * from post");
             Assert.IsTrue(posts.Count > 0);
 
             // update title
@@ -74,10 +74,10 @@ namespace Tent.Tests
             var sql = @"
                 IF EXISTS (
                     SELECT * FROM INFORMATION_SCHEMA.TABLES
-                    WHERE TABLE_NAME = 'Posts'
+                    WHERE TABLE_NAME = 'Post'
                 )
-                    DROP TABLE Posts
-                CREATE TABLE Posts (
+                    DROP TABLE Post
+                CREATE TABLE Post (
 	                Id INT PRIMARY KEY IDENTITY(1, 1),
 	                Title VARCHAR(100) NOT NULL,
 	                Html VARCHAR(MAX) NOT NULL,
@@ -89,7 +89,7 @@ namespace Tent.Tests
                 Title = "abc", Html = "def", Summary = "has no column"
             });
             //db.Select<int>("INSERT INTO Posts (Title, Html, DateCreated) VALUES ('abc', 'def', GETDATE())");
-            var post = db.Select<Post>("SELECT * FROM Posts WHERE Title = 'abc'").First();
+            var post = db.Select<Post>("SELECT * FROM Post WHERE Title = 'abc'").First();
             Assert.IsTrue(post != null);
             Assert.IsTrue(post.Title == "abc");
             Assert.IsTrue(post.Summary == null);
@@ -125,10 +125,10 @@ namespace Tent.Tests
             var sql = @"
                 IF EXISTS (
                     SELECT * FROM INFORMATION_SCHEMA.TABLES
-                    WHERE TABLE_NAME = 'Posts'
+                    WHERE TABLE_NAME = 'Post'
                 )
-                    DROP TABLE Posts
-                CREATE TABLE Posts (
+                    DROP TABLE Post
+                CREATE TABLE Post (
 	                Id INT PRIMARY KEY IDENTITY(1, 1),
 	                CoverImage VARCHAR(100) NOT NULL,
 	                Title VARCHAR(100) NOT NULL,
@@ -147,10 +147,10 @@ namespace Tent.Tests
             var sql = @"
                 IF EXISTS (
                     SELECT * FROM INFORMATION_SCHEMA.TABLES
-                    WHERE TABLE_NAME = 'Posts'
+                    WHERE TABLE_NAME = 'Post'
                 )
-                    DROP TABLE Posts
-                CREATE TABLE Posts (
+                    DROP TABLE Post
+                CREATE TABLE Post (
 	                Id INT PRIMARY KEY IDENTITY(1, 1),
 	                CoverImage VARCHAR(100),
 	                Title VARCHAR(100) NOT NULL,

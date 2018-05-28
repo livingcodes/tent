@@ -22,7 +22,7 @@ namespace Tent.Tests
             var cache = new SerializedCached(distributedCache);
             pack = new Pack(cache);
 
-            var sql = new Table("Posts")
+            var sql = new Table("Post")
                 .AddColumn("Id", SqlType.Int, Syntax.Identity(1, 1))
                 .AddColumn("Html", SqlType.VarCharMax)
                 .End()
@@ -37,27 +37,27 @@ namespace Tent.Tests
 
         [TestMethod]
         public void Select() {
-            var posts = pack.Select<Post>("select * from posts");
+            var posts = pack.Select<Post>("select * from post");
             Assert.IsTrue(posts.Count > 0);
         }
 
         [TestMethod]
         public void CacheSelectList() {
-            var posts = pack.Cache("test").Select<Post>("select * from posts");
+            var posts = pack.Cache("test").Select<Post>("select * from post");
             Assert.IsTrue(posts.Count == 1);
 
             db.Insert(new Post() { Html = "Test 2" });
-            posts = pack.Select<Post>("select * from posts");
+            posts = pack.Select<Post>("select * from post");
             Assert.IsTrue(posts.Count == 2);
 
-            posts = pack.Cache("test").Select<Post>("select * from posts");
+            posts = pack.Cache("test").Select<Post>("select * from post");
             Assert.IsTrue(posts.Count == 1);
         }
 
         [TestMethod]
         public void CacheSelectOne() {
             // original html is abc
-            var post = pack.Cache("test-one").SelectOne<Post>("select * from posts where id = 1");
+            var post = pack.Cache("test-one").SelectOne<Post>("select * from post where id = 1");
             Assert.IsTrue(post.Html == "abc");
 
             // update html to def
@@ -65,7 +65,7 @@ namespace Tent.Tests
             db.Update(post);
 
             // get uncached, updated html from database
-            var postUpdated = pack.SelectOne<Post>("select * from posts where id = 1");
+            var postUpdated = pack.SelectOne<Post>("select * from post where id = 1");
             Assert.IsTrue(postUpdated.Html == "def");
 
             // get cached, original html from cache
@@ -90,19 +90,19 @@ namespace Tent.Tests
 
         [TestMethod]
         public void SelectWithParameterArguement() {
-            var posts = pack.Select<Post>("select * from posts where id = @id", 1);
+            var posts = pack.Select<Post>("select * from post where id = @id", 1);
             Assert.IsTrue(posts.Count > 0);
         }
 
         [TestMethod]
         public void SelectWith2ParameterArguements() {
-            var posts = pack.Select<Post>("select * from posts where id = @id and html = @html", 1, "abc");
+            var posts = pack.Select<Post>("select * from post where id = @id and html = @html", 1, "abc");
             Assert.IsTrue(posts.Count > 0);
         }
 
         [TestMethod]
         public void SelectWithParameterFunction() {
-            var posts = pack.Sql("select * from posts where id = @id")
+            var posts = pack.Sql("select * from post where id = @id")
                 .Parameter("@id", 1)
                 .Select<Post>();
             Assert.IsTrue(posts.Count == 1);
@@ -110,7 +110,7 @@ namespace Tent.Tests
 
         [TestMethod]
         public void SelectWith2ParameterFunctions() {
-            var posts = pack.Sql("select * from posts where id = @id and html = @html")
+            var posts = pack.Sql("select * from post where id = @id and html = @html")
                 .Parameter("@id", 1)
                 .Parameter("@html", "abc")
                 .Select<Post>();
@@ -119,13 +119,13 @@ namespace Tent.Tests
 
         [TestMethod]
         public void SelectOne() {
-            var post = pack.SelectOne<Post>("select * from posts");
+            var post = pack.SelectOne<Post>("select * from post");
             Assert.IsTrue(post.Id == 1);
         }
 
         [TestMethod]
         public void SelectOneWithParameter() {
-            var post = pack.SelectOne<Post>("select * from posts where id = @id", 1);
+            var post = pack.SelectOne<Post>("select * from post where id = @id", 1);
             Assert.IsTrue(post.Id == 1);
         }
 
@@ -137,34 +137,40 @@ namespace Tent.Tests
 
         [TestMethod]
         public void Execute() {
-            var affectedRows = pack.Execute("insert into posts values ('another')");
+            var affectedRows = pack.Execute("insert into post values ('another')");
             Assert.IsTrue(affectedRows == 1);
 
-            affectedRows = pack.Execute("insert into posts values ('third'); insert into posts values ('fourth')");
+            affectedRows = pack.Execute("insert into post values ('third'); insert into post values ('fourth')");
             Assert.IsTrue(affectedRows == 2);
         }
 
         [TestMethod]
         public void ExecuteWithParameter() {
-            var affectedRows = pack.Execute("insert into posts values (@post)", "cat lols");
+            var affectedRows = pack.Execute("insert into post values (@post)", "cat lols");
             Assert.IsTrue(affectedRows == 1);
         }
 
         [TestMethod]
         public void SelectEmptyListResult() {
-            var posts = pack.Select<Post>("select * from posts where id = 2");
+            var posts = pack.Select<Post>("select * from post where id = 2");
             Assert.IsTrue(posts.Count == 0);
         }
 
         [TestMethod]
         public void SelectWithParameterUsedMultipleTimes() {
-            var posts = pack.Select<Post>("select * from posts where id = @id and id < (@id + 1) and html = @html", 1, "abc");
+            var posts = pack.Select<Post>("select * from post where id = @id and id < (@id + 1) and html = @html", 1, "abc");
+            Assert.IsTrue(posts.Count == 1);
+        }
+
+        [TestMethod]
+        public void WhereWithParameter() {
+            var posts = pack.Where<Post>("html = @html", "abc");
             Assert.IsTrue(posts.Count == 1);
         }
 
         [TestMethod, ExpectedException(typeof(Exception))]
         public void ParameterCountDoesNotMatch() {
-            var posts = pack.Select<Post>("select * from posts where id = @id and html = @html", 1);
+            var posts = pack.Select<Post>("select * from post where id = @id and html = @html", 1);
             // throws exception
         }
 

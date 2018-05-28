@@ -22,10 +22,10 @@ namespace Tent.Tests
             db.Select<int>(@"
                 IF EXISTS (
                     SELECT * FROM INFORMATION_SCHEMA.TABLES
-                    WHERE TABLE_NAME = 'Posts'
+                    WHERE TABLE_NAME = 'Post'
                 )
-                    DROP TABLE Posts
-                CREATE TABLE Posts (
+                    DROP TABLE Post
+                CREATE TABLE Post (
 	                Id INT PRIMARY KEY IDENTITY(1, 1),
 	                Html VARCHAR(MAX) NOT NULL,
                 )");
@@ -34,7 +34,7 @@ namespace Tent.Tests
             var connectionFactory = new SqlConnectionFactory();
             var reader = new Reader();
             var query = new Query(connectionFactory, reader);
-            var posts = query.Select<Post>("SELECT * FROM Posts"); 
+            var posts = query.Select<Post>("SELECT * FROM Post"); 
 
             Assert.IsTrue(posts.Count == 1);
         }

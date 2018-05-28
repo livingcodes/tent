@@ -25,7 +25,7 @@ namespace Tent.Data
             try {
                 connection.Open();
                 command = (SqlCommand)connection.CreateCommand();
-                ISqlBuilder sqlBuilder = new SqlBuilder<T>(instance, command, this, cache);
+                ISqlBuilder sqlBuilder = new SqlBuilder<T>(instance, command, this, cache, tableName);
                 var sql = sqlBuilder.BuildInsertSql();
                 command.CommandText = sql;
                 rowsAffected = command.ExecuteNonQuery();
@@ -46,7 +46,7 @@ namespace Tent.Data
             try {
                 connection.Open();
                 command = (SqlCommand)connection.CreateCommand();
-                ISqlBuilder sqlBuilder = new SqlBuilder<T>(instance, command, this, cache);
+                ISqlBuilder sqlBuilder = new SqlBuilder<T>(instance, command, this, cache, tableName);
                 var sql = sqlBuilder.BuildUpdateSql();
                 command.CommandText = sql;
                 rowsAffected = command.ExecuteNonQuery();
@@ -60,7 +60,7 @@ namespace Tent.Data
         }
 
         public int Delete<T>(int id) {
-            var table = typeof(T).Name + "s";
+            var table = tableName.Get<T>();
             int rowsAffected = 0;
             var connection = connectionFactory.Create();
             SqlCommand command = null;
@@ -78,11 +78,11 @@ namespace Tent.Data
             return rowsAffected;
         }
     }
-    public static class DatabaseExtensions
-    {
-        public static void Truncate<T>(this IDatabase db) {
-            var tableName = typeof(T).Name + "s";
-            db.Select<T>($"truncate table {tableName}");
-        }
-    }
+    //public static class DatabaseExtensions
+    //{
+    //    public static void Truncate<T>(this Database db) {
+    //        var tableName = db.TableName.Get<T>();
+    //        db.Execute($"truncate table {tableName}");
+    //    }
+    //}
 }

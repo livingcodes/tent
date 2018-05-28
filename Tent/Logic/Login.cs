@@ -15,9 +15,7 @@ namespace Tent.Logic
         Pack db;
 
         public IResult<User> Execute() {
-            var user = db.Sql("select * from users where email = @email")
-                .Parameter("@email", email)
-                .SelectOne<User>();
+            var user = db.WhereOne<User>("email = @email", email);
             
             if (user == null)
                 return Result<User>.Failure(null, "Email is not registered");
