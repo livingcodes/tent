@@ -7,5 +7,11 @@
                 ? ifNull
                 : value.ToString();
         }
+
+        public static int ToInt(this string text, int @default = 0) {
+            int result = @default;
+            var succeeded = int.TryParse(text, out result);
+            return succeeded ? result : @default;
+        }
     }
 }

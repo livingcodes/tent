@@ -16,11 +16,7 @@ namespace Tent.Pages.blog
             } else {
                 var queryString = Request.QueryString.Value;
                 var id = queryString.Split('=')[1];
-                Post = db.SelectOne<Post>(
-                    @"SELECT * FROM Posts
-                    WHERE Id = @Id",
-                    id
-                );
+                Post = db.Select<Post>(id.ToInt());
             }
         }
 
