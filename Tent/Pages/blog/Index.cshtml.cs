@@ -7,7 +7,7 @@ namespace Tent.Pages.blog
     {
         public void OnGet() {
             var db = new Pack();
-            Posts = db.Select<Post>("SELECT * FROM Post ORDER BY PublishDate DESC");
+            Posts = db.Select<Post>("ORDER BY PublishDate DESC");
         }
 
         public List<Post> Posts { get; set; }

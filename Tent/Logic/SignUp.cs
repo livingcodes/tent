@@ -15,7 +15,7 @@ namespace Tent.Logic
         Pack db;
 
         public IResult Execute() {
-            var user = db.WhereOne<User>("Email = @Email", email);
+            var user = db.SelectOne<User>("WHERE Email = @Email", email);
             if (user != null)
                 return Result.Failure("Email is not available");
             

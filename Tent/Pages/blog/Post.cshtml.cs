@@ -9,10 +9,10 @@ namespace Tent.Pages.blog
             var db = new Pack();
 
             if (!Request.QueryString.HasValue) {
-                var posts = db.Select<Post>(
+                var mostRecent = db.SelectOne<Post>(
                     @"SELECT TOP 1 * FROM Posts 
                     ORDER BY PublishDate DESC");
-                Post = posts[0];
+                Post = mostRecent;
             } else {
                 var queryString = Request.QueryString.Value;
                 var id = queryString.Split('=')[1];

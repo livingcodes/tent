@@ -163,9 +163,21 @@ namespace Tent.Tests
         }
 
         [TestMethod]
-        public void WhereWithParameter() {
-            var posts = pack.Where<Post>("html = @html", "abc");
-            Assert.IsTrue(posts.Count == 1);
+        public void SelectShortSyntaxWhere() {
+            var posts = pack.Select<Post>("where html = @html", "abc");
+            assert(posts.Count > 0);
+        }
+
+        [TestMethod]
+        public void SelectShortSyntaxOrderBy() {
+            var posts = pack.Select<Post>("order by id");
+            assert(posts.Count > 0);
+        }
+
+        [TestMethod]
+        public void SelectOneShortSyntaxWhere() {
+            var post = pack.SelectOne<Post>("where html = @html", "abc");
+            assert(post.Html == "abc");
         }
 
         [TestMethod, ExpectedException(typeof(Exception))]

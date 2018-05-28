@@ -65,22 +65,6 @@ namespace Tent.Data
             return this;
         }
 
-        public List<T> Where<T>(string sql = null, params object[] parameters) {
-            var tableName = this.tableName.Get<T>();
-            var sqlStart = $"SELECT * FROM [{tableName}] WHERE ";
-            sql = sql ?? query.Sql();
-            sql = sqlStart + sql;
-            return Select<T>(sql, parameters);
-        }
-
-        public T WhereOne<T>(string sql = null, params object[] parameters) {
-            var tableName = this.tableName.Get<T>();
-            var sqlStart = $"SELECT * FROM [{tableName}] WHERE ";
-            sql = sql ?? query.Sql();
-            sql = sqlStart + sql;
-            return SelectOne<T>(sql, parameters);
-        }
-
         public List<T> Select<T>(string sql = null, params object[] parameters) {
         // get from cache
             if (cacheKey != null) {
@@ -89,10 +73,24 @@ namespace Tent.Data
                     return (List<T>)cacheValue;
             }
 
-        // get from database
-            if (sql != null)
-                query.Sql(sql);
+        // sql syntax
+            if (sql == null)
+                sql = query.Sql();
             
+            if (!query.IsSproc && (
+                sql.ToUpper().StartsWith("WHERE ")
+            ||  sql.ToUpper().StartsWith("GROUP BY ")
+            ||  sql.ToUpper().StartsWith("ORDER BY ")
+            ) ) {
+                var tableName = this.tableName.Get<T>();
+                sql = sql ?? query.Sql();
+                var sqlStart = $"SELECT * FROM [{tableName}] ";
+                sql = sqlStart + sql;
+            }
+
+            query.Sql(sql);
+
+        // parameters
             if (!query.IsSproc) {
                 var parameterNames = getParameterNamesFromSql(query.Sql());
                 if (parameterNames.Count > 0) {
@@ -113,14 +111,6 @@ namespace Tent.Data
             return list;
         }
 
-        void setCache(object obj) {
-            if (cacheKey != null) {
-                cache.Set(cacheKey, obj, cacheSeconds);
-                cacheKey = null;
-                cacheSeconds = 60;
-            }
-        }
-
         public T SelectOne<T>(string sql = null, params object[] parameters) {
         // get from cache
             if (cacheKey != null) {
@@ -129,10 +119,24 @@ namespace Tent.Data
                     return (T)cacheValue;
             }
 
-        // get from database
-            if (sql != null)
-                query.Sql(sql);
+        // sql syntax
+            if (sql == null)
+                sql = query.Sql();
             
+            if (!query.IsSproc && (
+                sql.ToUpper().StartsWith("WHERE ")
+            ||  sql.ToUpper().StartsWith("GROUP BY ")
+            ||  sql.ToUpper().StartsWith("ORDER BY ")
+            ) ) {
+                var tableName = this.tableName.Get<T>();
+                sql = sql ?? query.Sql();
+                var sqlStart = $"SELECT * FROM [{tableName}] ";
+                sql = sqlStart + sql;
+            }
+
+            query.Sql(sql);
+
+        // get from database
             if (!query.IsSproc) {
                 var parameterNames = getParameterNamesFromSql(query.Sql());
                 if (parameterNames.Count > 0)
@@ -143,7 +147,6 @@ namespace Tent.Data
 
         // set cache
             setCache(item);
-
             setQueryToNull();
 
             return item;
@@ -167,6 +170,14 @@ namespace Tent.Data
 
         public void DropTable(string tableName) {
             Select<int>($"drop table {tableName}");
+        }
+
+        void setCache(object obj) {
+            if (cacheKey != null) {
+                cache.Set(cacheKey, obj, cacheSeconds);
+                cacheKey = null;
+                cacheSeconds = 60;
+            }
         }
 
         List<string> getParameterNamesFromSql(string sql) {
