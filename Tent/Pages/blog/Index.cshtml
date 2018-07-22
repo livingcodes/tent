@@ -5,7 +5,7 @@
 <hr>
 @foreach(var post in @Model.Posts) {
     <h2>
-        <a href="/blog/post?id=@post.Id">
+        <a href="/blog/post/@post.Slug">
             @post.Title
         </a>
     </h2>

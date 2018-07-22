@@ -12,6 +12,7 @@ namespace Tent.Tests.Tasks
         public void CreatePostsTable() {
             var sql = new Table("Post")
                 .AddColumn("Id", SqlType.Int, Syntax.Identity(1, 1))
+                .AddColumn("Slug", SqlType.VarChar(100))
                 .AddColumn("Title", SqlType.VarChar(100), Syntax.NotNull)
                 .AddColumn("Body", SqlType.VarCharMax, Syntax.NotNull)
                 .AddColumn("PublishDate", SqlType.DateTime, Syntax.NotNull)
@@ -25,9 +26,16 @@ namespace Tent.Tests.Tasks
 
         public void InsertPost() {
             db.Insert(new Post {
+                Slug = "hello",
                 Title = "Hi",
                 Body = "hello...",
-                PublishDate = DateTime.Now
+                PublishDate = new DateTime(2018, 1, 1)
+            });
+            db.Insert(new Post {
+                Slug = "bye",
+                Title = "Goodbye",
+                Body = "goodbye...",
+                PublishDate = new DateTime(2018, 7, 4)
             });
         }
     }

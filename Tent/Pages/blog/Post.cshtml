@@ -1,8 +1,17 @@
-﻿@page
+﻿@page "{slug?}"
 @model Tent.Pages.blog.PostPage
 
-<h1>@Model.Post.Title</h1>
-<p>@Model.Post.PublishDate.ToString("M/d/yy")</p>
+<p>
+    <a href="/blog">POSTS</a>
+</p>
+<h1>
+    @Model.Post.Title
+</h1>
+<p>
+    @Model.Post.PublishDate.ToString("M/d/yy")
+    <br>
+    @Model.RouteData.Values["slug"]
+</p>
 <p>
     @Html.Raw(Model.Post.Body)
 </p>

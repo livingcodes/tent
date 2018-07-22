@@ -8,9 +8,16 @@ namespace Tent.Pages.blog
         public void OnGet() {
             var db = new Pack();
 
-            if (!Request.QueryString.HasValue) {
+            if (RouteData.Values.ContainsKey("slug")) {
+                var slug = RouteData.Values["slug"].ToString();
+                var post = db.SelectOne<Post>(
+                    @"SELECT TOP 1 * FROM Post
+                    WHERE Slug = @Slug",
+                    slug);
+                Post = post;
+            } else if (!Request.QueryString.HasValue) {
                 var mostRecent = db.SelectOne<Post>(
-                    @"SELECT TOP 1 * FROM Posts 
+                    @"SELECT TOP 1 * FROM Post 
                     ORDER BY PublishDate DESC");
                 Post = mostRecent;
             } else {
@@ -26,6 +33,7 @@ namespace Tent.Pages.blog
     public class Post
     {
         public int Id { get; set; }
+        public string Slug { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
         public DateTime PublishDate { get; set; }

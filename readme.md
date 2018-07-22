@@ -48,7 +48,7 @@ Same as with reading it will map the properties to the columns for you.
 db.Insert(user);
 db.Upate(user);
 db.Delete(user);
-db.Delete<User>(user);
+db.Delete<User>(id);
 ```
 
 A couple of optional uses, if you prefer...
@@ -74,7 +74,7 @@ db.Sql("where email = @email")
    .Select<User>();
 ```
 
--------------------
+### Finally
 
 The api is an attempt to keep data access simple, intuitive and fast with as few steps required as possible.
 I find it makes the code especially easy to follow for simple queries.
