@@ -19,7 +19,7 @@ namespace Tent.Tests
         [TestMethod]
         public void SelectSql() {
             var db = new Pack();
-            db.Select<int>(@"
+            db.Execute(@"
                 IF EXISTS (
                     SELECT * FROM INFORMATION_SCHEMA.TABLES
                     WHERE TABLE_NAME = 'Post'
