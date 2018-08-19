@@ -22,10 +22,10 @@ namespace Tent.Tests
 	                Html VARCHAR(MAX) NOT NULL,
 	                DateCreated DATETIME NOT NULL
                 )";
-            db.Select<int>(sql);
+            db.Execute(sql);
 
             // insert
-            var post = new Post() {
+            var post = new Post {
                 Title = "ASP.NET Core DI",
                 Html = "<h1>ASP.NET Core DI</h1><p>Dependency injection</p>"
             };
@@ -83,9 +83,9 @@ namespace Tent.Tests
 	                Html VARCHAR(MAX) NOT NULL,
 	                DateCreated DATETIME NOT NULL
                 )";
-            db.Select<int>(sql);
+            db.Execute(sql);
 
-            db.Insert(new Post() {
+            db.Insert(new Post {
                 Title = "abc", Html = "def", Summary = "has no column"
             });
             //db.Select<int>("INSERT INTO Posts (Title, Html, DateCreated) VALUES ('abc', 'def', GETDATE())");
@@ -135,9 +135,9 @@ namespace Tent.Tests
 	                Html VARCHAR(MAX) NOT NULL,
 	                DateCreated DATETIME NOT NULL
                 )";
-            db.Select<int>(sql);
+            db.Execute(sql);
 
-            db.Insert(new Post() {
+            db.Insert(new Post {
                 Title = "abc", Html = "def"
             });
         }
@@ -157,9 +157,9 @@ namespace Tent.Tests
 	                Html VARCHAR(MAX) NOT NULL,
 	                DateCreated DATETIME NOT NULL
                 )";
-            db.Select<int>(sql);
+            db.Execute(sql);
 
-            var rowsAffected = db.Insert(new Post() {
+            var rowsAffected = db.Insert(new Post {
                 Title = "abc", Html = "def"
             });
             var post = db.Select<Post>(1);

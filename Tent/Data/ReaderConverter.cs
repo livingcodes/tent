@@ -181,14 +181,17 @@ namespace Tent.Data
 
         public List<string> From(string tableName, IDatabase db, ICache cache) {
             // get from cache
-            var columnNameList = cache.Get<List<string>>($"ColumnsFor{tableName}");
+            var columnNameList = cache == null
+                ? null
+                : cache.Get<List<string>>($"ColumnsFor{tableName}");
             if (columnNameList == null) {
                 // get from database
                 columnNameList = db.Select<string>(
                     $@"SELECT COLUMN_NAME FROM Tent.INFORMATION_SCHEMA.COLUMNS
                     WHERE TABLE_NAME = '{tableName}'"
                 );
-                cache.Set($"ColumnsFor{tableName}", columnNameList, 60);
+                if (cache != null)
+                    cache.Set($"ColumnsFor{tableName}", columnNameList, 60);
             }
             return columnNameList;
         }
