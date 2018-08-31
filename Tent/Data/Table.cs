@@ -3,17 +3,6 @@
     // prototype
     public class Table
     {
-        public void Example() {
-            var posts = new Table("Posts")
-                .AddColumn("Id", SqlType.Int, Syntax.Identity(1, 1))
-                .AddColumn("Title", SqlType.VarChar(80), Syntax.NotNull)
-                .AddColumn("Html", SqlType.VarCharMax)
-                //.AddColumnDateCreated()
-                //.AddColumnLastModified();
-                .End();
-            //posts.Sql;
-        }
-
         public Table(string name) {
             Name = name;
             Sql = $@"
@@ -73,5 +62,16 @@
                 return Name;
             }
         }
+
+        //public void Example() {
+        //    var posts = new Table("Posts")
+        //        .AddColumn("Id", SqlType.Int, Syntax.Identity(1, 1))
+        //        .AddColumn("Title", SqlType.VarChar(80), Syntax.NotNull)
+        //        .AddColumn("Html", SqlType.VarCharMax)
+        //        //.AddColumnDateCreated()
+        //        //.AddColumnLastModified();
+        //        .End();
+        //    //posts.Sql;
+        //}
     }
 }

@@ -1,0 +1,41 @@
+IQuery
+	List<T> 	Select<T>	(sql = null)
+	DataTable 	SelectTable	(sql = null)
+	T 			SelectOne	(sql = null)
+	int			Execute		(sql = null)
+	
+	IQuery 		Sql			(sql)
+	IQuery 		Parameter	(name, value)
+	IQuery 		Sproc		(name)
+	
+	bool IsSproc
+	string Sql()
+	
+IDatabase
+	List<T> 	Select<T>	(sql, parameters[])
+	T			SelectOne<T>(sql, parameters[])
+	T			Select<T>	(id)
+	int			Execute		(sql, parameters[])
+	int			Insert<T>	(T instance)
+	int			Update<T>	(T instance)
+	int			Delete<T>	(T instance)
+	
+SimpleDatabase : IDatabase
+	...
+	
+Database : IDatabase
+	List<T> 	Select<T>	(sql = null, parameters[])
+	T			SelectOne<T>(sql = null, parameters[])
+	T			Select<T>	(id)
+	int			Execute		(sql = null, parameters[])
+	... +
+	
+	IQuery		query
+	IDatabase	simpleDb
+	
+	Database	Sql			(sql)
+	Database	Parameter	(name, value)
+	Database	Sproc		(name)
+	Database	Cache		(key, expirateDate = null, seconds = null)
+	
+	

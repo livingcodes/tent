@@ -10,6 +10,8 @@
         </a>
     </h2>
     <p>@post.PublishDate.ToString("M/d/yyyy")</p>
-    @Html.Raw(post.Body)
+    <div class="post">
+        @Html.Raw(post.Body)
+    </div>
     <hr>
 }

@@ -40,13 +40,13 @@ What else can it do?
 
 ### Other CRUD
 
-So we covered the reading but what about the other CRUD.
-Yep can create, update and delete too.
+So we covered *read* but what about the other CRUD.
+Yep can *create*, *update* and *delete* too.
 Same as with reading it will map the properties to the columns for you.
 
 ```
 db.Insert(user);
-db.Upate(user);
+db.Update(user);
 db.Delete(user);
 db.Delete<User>(id);
 ```
@@ -68,8 +68,11 @@ the syntax reads like you would verbally discuss it, "Select user where email eq
 
 ### Explicit Parameter Name-Value Pairs
 
+Don't want to worry about order of parameters...don't blame you.
+
 ```
-db.Sql("where email = @email")
+db.Sql("where email = @email and token = @token")
+   .Parameter("@token", token)
    .Parameter("@email", email)
    .Select<User>();
 ```
@@ -84,8 +87,8 @@ There's some code in the project for the following to.
 * api to create SQL tables
 * cache queries, `db.Cache(key).SelectOne<User>(id);`
 * only interested in one result, `db.SelectOne<User>("where id = @id");`
-* of course if you're querying by id how about, `db.SelectOne<User>(id);`
-* like sprocs, `db.Sproc("GetUser").Select<User>();`
+* if you're querying by id, it's even more simple, `db.SelectOne<User>(id);`
+* like sprocs, `db.Sproc("GetUser").Parameter("@Id", id).Select<User>();`
 
 # Getting Started
 
@@ -109,7 +112,7 @@ public class ConnectionFactory : IConnectionFactory
 * Share connection
 * Return multiple classes from single query
 * Async select
-* Return tuple var p = db.Select<Post, (string Title, string Html)>(post.Id);
+* Return tuple var p = db.Select<Post, (string Title, string Html)>(post.Id); looks like it is not possible :(
 * Log queries and exceptions
 * Log long running queries
 * Paging
