@@ -37,6 +37,18 @@ namespace Tent.Tests.Tasks
                 Body = "goodbye...",
                 PublishDate = new DateTime(2018, 7, 4)
             });
+            db.Insert(new Post {
+                Slug = "three",
+                Title = "Three",
+                Body = "Three body...",
+                PublishDate = new DateTime(2018, 7, 5)
+            });
+            db.Insert(new Post {
+                Slug = "four",
+                Title = "Four",
+                Body = "Four body...",
+                PublishDate = new DateTime(2018, 7, 6)
+            });
         }
     }
 }

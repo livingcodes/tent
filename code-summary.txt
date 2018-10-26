@@ -24,6 +24,12 @@ SimpleDatabase : IDatabase
 	...
 	
 Database : IDatabase
+	Database
+		IConnectionFactory connectionFactory, 
+        IRead reader,
+        ICache cache,
+        ITableName tableName = null
+	
 	List<T> 	Select<T>	(sql = null, parameters[])
 	T			SelectOne<T>(sql = null, parameters[])
 	T			Select<T>	(id)
@@ -38,4 +44,17 @@ Database : IDatabase
 	Database	Sproc		(name)
 	Database	Cache		(key, expirateDate = null, seconds = null)
 	
+Idea: One big interface
+IDatabase
+	List<T> 	Select<T>	(sql = null, parameters[])
+	T			SelectOne<T>(sql = null, parameters[])
+	T			Select<T>	(id)
+	int			Execute		(sql = null, parameters[])
+	int			Insert<T>	(T instance)
+	int			Update<T>	(T instance)
+	int			Delete<T>	(T instance)
 	
+	IDatabase	Sql			(sql)
+	IDatabase	Parameter	(name, value)
+	IDatabase	Sproc		(name)
+	IDatabase	Cache		(key, expirateDate = null, seconds = null)
