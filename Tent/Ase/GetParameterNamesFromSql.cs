@@ -8,7 +8,7 @@ namespace Ase
             var parameters = new Dictionary<string, int>();
             var index = sql.IndexOf('@');
             while (index > -1) {
-                var endIndex = sql.IndexOfAny(new char[] { ' ', ',', ')' }, index);
+                var endIndex = sql.IndexOfAny(new char[] { ' ', ',', ')', '\r', '\n' }, index);
                 if (endIndex == -1)
                     endIndex = sql.Length - 1;
                 else
