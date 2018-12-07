@@ -9,12 +9,7 @@ namespace Ase.Tests
         [ClassInitialize]
         public static void InitializeClass(TestContext context) {
             initialize();
-            var sql = new Table("Post")
-                .AddColumn("Id", SqlType.Int, Syntax.Identity(1, 1))
-                .AddColumn("Html", SqlType.VarChar(200))
-                .End()
-                .Sql;
-            db.Execute(sql);
+            createPostTable();
         }
 
         [TestMethod]
@@ -53,11 +48,6 @@ namespace Ase.Tests
             assert(rows == 1);
             posts = db.Select<Post>("select * from post where id = 1");
             assert(posts.Count == 0);
-        }
-
-        public class Post { 
-            public int Id { get; set; }
-            public string Html { get; set; } 
         }
     }
 }

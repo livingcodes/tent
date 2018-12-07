@@ -104,6 +104,7 @@ public class ConnectionFactory : IConnectionFactory
 ```
 
 # To Do
+* Paging
 * Handle nullable value types datetime
 * Cache class properties
 * Configuration to insert or update properties and/or fields
@@ -115,7 +116,6 @@ public class ConnectionFactory : IConnectionFactory
 * Return tuple var p = db.Select<Post, (string Title, string Html)>(post.Id); looks like it is not possible :(
 * Log queries and exceptions
 * Log long running queries
-* Paging
 * Events ??? open connection event, close connection event, long running query event
 * Support different data providers (like postgres, mysql, memory)
 * Imagine: intellisense for inline sql (for syntax and table and column names)

@@ -56,6 +56,10 @@ namespace Tent.Data
                 sql = sqlStart + sql;
             }
 
+            if (!query.IsSproc && hasPaging) {
+                sql += pagingSql;
+            }
+
             query.Sql(sql);
 
         // parameters
@@ -69,6 +73,10 @@ namespace Tent.Data
                         for (var i = 0; i < parameters.Length; i++)
                             query.Parameter(parameterNames[i], parameters[i]);
                     }
+                }
+                if (hasPaging) {
+                    query.Parameter("@Page", page);
+                    query.Parameter("@Take", take);
                 }
             }
 

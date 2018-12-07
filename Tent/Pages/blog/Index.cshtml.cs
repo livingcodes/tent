@@ -7,7 +7,9 @@ namespace Tent.Pages.blog
     {
         public void OnGet() {
             var db = new Pack();
-            Posts = db.Select<Post>("ORDER BY PublishDate DESC");
+            Posts = db
+                .Paging(page:1, take:2)
+                .Select<Post>("ORDER BY PublishDate DESC");
         }
 
         public List<Post> Posts { get; set; }

@@ -136,6 +136,31 @@ namespace Tent.Tests
         }
 
         [TestMethod]
+        public void SelectPaging() {
+            for (var i=1; i<=8; i++)
+                pack.Insert(new Post { Html = "Paging " + i });
+            var page2 = pack
+                .Sql("select * from post where html like 'Paging%' order by id")
+                .Paging(2, 3)
+                .Select<Post>();
+            Assert.IsTrue(page2.Count == 3);
+            Assert.IsTrue(page2[0].Html == "Paging 4");
+        }
+
+        [TestMethod]
+        public void SelectPagingWithParameter() {
+            for (var i = 1; i <= 8; i++)
+                pack.Insert(new Post { Html = "Paging " + i });
+            var page2 = pack
+                .Sql("select * from post where html like @Keyword + '%' order by id")
+                .Parameter("@Keyword", "Paging")
+                .Paging(2, 3)
+                .Select<Post>();
+            Assert.IsTrue(page2.Count == 3);
+            Assert.IsTrue(page2[0].Html == "Paging 4");
+        }
+
+        [TestMethod]
         public void Execute() {
             var affectedRows = pack.Execute("insert into post values ('another')");
             Assert.IsTrue(affectedRows == 1);
