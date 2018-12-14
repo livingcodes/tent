@@ -10,20 +10,16 @@ namespace Tent.Pages.blog
 
             if (RouteData.Values.ContainsKey("slug")) {
                 var slug = RouteData.Values["slug"].ToString();
-                var post = db.SelectOne<Post>(
-                    @"SELECT TOP 1 * FROM Post
-                    WHERE Slug = @Slug",
-                    slug);
+                var post = db.SelectOne<Post>("WHERE Slug = @Slug", slug);
                 Post = post;
             } else if (!Request.QueryString.HasValue) {
                 var mostRecent = db.SelectOne<Post>(
-                    @"SELECT TOP 1 * FROM Post 
-                    ORDER BY PublishDate DESC");
+                    "ORDER BY PublishDate DESC");
                 Post = mostRecent;
             } else {
                 var queryString = Request.QueryString.Value;
                 var id = queryString.Split('=')[1];
-                Post = db.Select<Post>(id.ToInt());
+                Post = db.SelectById<Post>(id.ToInt());
             }
         }
 

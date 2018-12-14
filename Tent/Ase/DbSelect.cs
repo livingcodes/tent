@@ -84,7 +84,7 @@ namespace Ase
             )) {
                 var tableName = this.tableName.Get<T>();
                 //sql = sql ?? query.Sql();
-                var sqlStart = $"SELECT * FROM [{tableName}] ";
+                var sqlStart = $"SELECT TOP 1 * FROM [{tableName}] ";
                 sql = sqlStart + sql;
             }
 
@@ -115,6 +115,10 @@ namespace Ase
             setQueryToNull();
             return content;
         }
+
+        public T SelectById<T>(int id) =>
+            Parameter("@Id", id)
+            .SelectOne<T>($"WHERE Id = @Id");
 
         List<T> select<T>(string sql) {
             var list = new List<T>();

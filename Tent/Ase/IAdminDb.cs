@@ -6,7 +6,6 @@ namespace Ase
     {
         void Truncate(string table);
         void DropTable(string table);
-        void CreateProcedure(string name, string sql);
-        void CreateProcedure(string name, IEnumerable<string> parameters, string sql);
+        int ExecuteRaw(string sql); // won't add parameters
     }
 }

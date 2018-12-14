@@ -2,7 +2,8 @@
 using System.Text;
 using Tent.Auth;
 using Tent.Logic;
-using static Tent.Table;
+using Ase;
+using static Ase.Table;
 
 namespace Tent.Tests.Logic
 {

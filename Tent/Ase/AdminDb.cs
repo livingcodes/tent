@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace Ase
@@ -16,23 +17,22 @@ namespace Ase
         public void Truncate(string tableName) =>
             db.Execute($"truncate table {tableName}");
 
-        public void CreateProcedure(string name, string sql) =>
-            CreateProcedure(name, new List<string>(), sql);
-
-        public void CreateProcedure(string name, IEnumerable<string> parameters, string sql) {
-            db.Execute($"DROP PROCEDURE IF EXISTS {name}");
-
-            string _sql = $"CREATE PROCEDURE {name} ";
-            if (parameters.Count() > 0) {
-                _sql += "(";
-                foreach (var parameter in parameters)
-                    _sql += parameter + ", ";
-                _sql = _sql.Remove(_sql.Length - 2);
-                _sql += ") ";
+        public int ExecuteRaw(string sql) {
+            var connection = ((Db)db).connectionFactory.Create();
+            int affectedRows = -1;
+            IDbCommand command = null;
+            try {
+                connection.Open();
+                command = connection.CreateCommand();
+                command.CommandText = sql;
+                affectedRows = command.ExecuteNonQuery();
+            } finally {
+                if (command != null)
+                    command.Dispose();
+                if (connection.State != ConnectionState.Closed)
+                    connection.Close();
             }
-            _sql += $"AS BEGIN {sql} END";
-
-            db.Execute(_sql);
+            return affectedRows;
         }
     }
 }

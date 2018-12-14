@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Ase;
+using static Ase.Table;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Tent.Pages.blog;
-using static Tent.Table;
 
 namespace Tent.Tests.Tasks
 {

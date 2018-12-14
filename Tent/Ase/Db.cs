@@ -20,7 +20,7 @@ namespace Ase
             this.getParameterNamesFromSql = new GetParameterNamesFromSql();
             this.parameters = new List<(string name, object value)>();
         }
-        IConnectionFactory connectionFactory;
+        public IConnectionFactory connectionFactory { get; private set; }
         IRead reader;
         ICache cache;
         ITableName tableName;

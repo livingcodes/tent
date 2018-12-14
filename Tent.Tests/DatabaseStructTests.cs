@@ -139,7 +139,7 @@ namespace Tent.Tests
             // leave publish date and isactive null
             db.Execute("insert into post (html,score,adrevenue) values ('abc',1,2)");
             // trying to select null date into non-nullable date property
-            var post = db.Select<Post>(1);
+            var post = db.SelectById<Post>(1);
             // if bit column used for c# bool is null then it is converted to c# false
             assert(post.IsActive == false);
             // if date column is dbnull then it is converted to c# minvalue

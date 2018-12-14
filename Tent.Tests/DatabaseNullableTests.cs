@@ -30,7 +30,7 @@ namespace Tent.Tests
             };
             db.Insert(actual);
 
-            var post = db.Select<Post>(1);
+            var post = db.SelectById<Post>(1);
             assert(post.OptIn.Value);
         }
 
@@ -42,7 +42,7 @@ namespace Tent.Tests
             };
             db.Insert(actual);
 
-            var post = db.Select<Post>(1);
+            var post = db.SelectById<Post>(1);
             assert(post.OptIn.Value == false);
         }
 
@@ -50,7 +50,7 @@ namespace Tent.Tests
         public void GetNullableBoolNull() {
             db.Execute("insert into post (html) values ('abc')");
 
-            var post = db.Select<Post>(1);
+            var post = db.SelectById<Post>(1);
             assert(post.OptIn.HasValue == false);
         }
 

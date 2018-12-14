@@ -4,7 +4,7 @@ using System;
 namespace Tent.Data
 {
     /// <summary>Stores reference to cached object. If object changes outside cache, it changes in cache too.</summary>
-    public class InMemoryCache : ICache
+    public class InMemoryCache : Ase.ICache
     {
         public InMemoryCache(IMemoryCache c) {
             this.c = c;

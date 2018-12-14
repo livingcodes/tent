@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Text;
 
-namespace Tent.Data
+namespace Ase
 {
     // todo: could try storing serialized json in IMemoryCache instead of I DistributedCache; wouldn't need to convert to byte array
     /// <summary>Serializes cached object to json then to bytes. 

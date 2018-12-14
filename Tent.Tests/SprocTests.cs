@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using Tent.Data;
-using static Tent.Table;
+using Ase;
+using static Ase.Table;
 
 namespace Tent.Tests
 {
@@ -19,15 +19,20 @@ namespace Tent.Tests
                     .End().Sql
             );
 
-            var admin = new Admin(db);
-            admin.CreateProcedure("GetPosts", $"SELECT * FROM {tableName}");
-            admin.CreateProcedure("GetPostsByDateCreated", 
-                new [] { "@DateCreated DateTime" }, 
-                $"SELECT * FROM {tableName} WHERE DateCreated > @DateCreated");
-            admin.CreateProcedure("GetPostById", 
-                new [] { "@Id INT" }, 
-                $"SELECT * FROM {tableName} WHERE Id = @Id");
-            
+            var admin = new AdminDb(db);
+            admin.ExecuteRaw($@"DROP PROCEDURE IF EXISTS GetPosts");
+            admin.ExecuteRaw($"CREATE PROCEDURE GetPosts AS SELECT * FROM {tableName}");
+
+            admin.ExecuteRaw($@"DROP PROCEDURE IF EXISTS GetPostsByDateCreated");
+            admin.ExecuteRaw($@"CREATE PROCEDURE GetPostsByDateCreated(@DateCreated DATETIME) AS 
+                SELECT * FROM {tableName} WHERE DateCreated > @DateCreated");
+
+            admin.ExecuteRaw($@"DROP PROCEDURE IF EXISTS GetPostById");
+            admin.ExecuteRaw(
+                $@"CREATE PROCEDURE GetPostById(@Id INT) AS BEGIN
+                    SELECT * FROM {tableName} WHERE Id = @Id
+                END");
+
             db.Insert(new Post() {
                 Title = "A", Html = "B"
             });
@@ -58,7 +63,7 @@ namespace Tent.Tests
         [TestMethod]
         public void CacheSproc() {
             var postList = db.Sproc("GetPostsByDateCreated")
-                .Cache("cached")
+                .Cache("cached", 60*5)
                 .Parameter("@DateCreated", DateTime.Now.AddDays(-10))
                 .Select<Post>();
             Assert.IsTrue(postList.Count > 0);

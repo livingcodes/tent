@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using Ase;
+using static Ase.Table;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Tent.Data;
-using static Tent.Table;
 
 namespace Tent.Tests
 {
@@ -75,16 +76,16 @@ namespace Tent.Tests
 
         [TestMethod]
         public void CacheSelectById() {
-            var post = pack.Cache("by-id").Select<Post>(1);
+            var post = pack.Cache("by-id").SelectById<Post>(1);
             Assert.IsTrue(post.Html == "abc");
 
             post.Html = "def";
             db.Update(post);
             
-            var updatedPost = pack.Select<Post>(1);
+            var updatedPost = pack.SelectById<Post>(1);
             Assert.IsTrue(updatedPost.Html == "def");
 
-            var cachedPost = pack.Cache("by-id").Select<Post>(1);
+            var cachedPost = pack.Cache("by-id").SelectById<Post>(1);
             Assert.IsTrue(cachedPost.Html == "abc");
         }
 
@@ -131,7 +132,7 @@ namespace Tent.Tests
 
         [TestMethod]
         public void SelectById() {
-            var post = pack.Select<Post>(1);
+            var post = pack.SelectById<Post>(1);
             Assert.IsTrue(post.Id == 1);
         }
 

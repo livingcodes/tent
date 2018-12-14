@@ -1,7 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using Tent.Data;
 
 namespace Tent.Tests
 {
@@ -41,14 +40,14 @@ namespace Tent.Tests
             db.Update(post);
 
             // verify update
-            post = db.Select<Post>(post.Id);
+            post = db.SelectById<Post>(post.Id);
             Assert.IsTrue(post.Title == "Updated");
 
             // delete
             db.Delete<Post>(post.Id);
 
             // verify delete (query id)
-            post = db.Select<Post>(post.Id);
+            post = db.SelectById<Post>(post.Id);
             Assert.IsTrue(post == null);
         }
 
@@ -159,12 +158,12 @@ namespace Tent.Tests
                 )";
             db.Execute(sql);
 
-            var rowsAffected = db.Insert(new Post {
+            var result = db.Insert(new Post {
                 Title = "abc", Html = "def"
             });
-            var post = db.Select<Post>(1);
+            var post = db.SelectById<Post>(1);
 
-            Assert.IsTrue(rowsAffected == 1);
+            Assert.IsTrue(result.numberRowsAffected == 1);
             Assert.IsTrue(post.Title == "abc");
         }
 

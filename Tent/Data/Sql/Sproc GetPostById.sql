@@ -1,7 +1,0 @@
-CREATE PROCEDURE GetPostById (
-	@Id INT
-) AS BEGIN
-	SELECT * FROM Posts
-	WHERE Id = @Id
-END
-GO
