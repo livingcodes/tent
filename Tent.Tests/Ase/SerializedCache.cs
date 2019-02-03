@@ -8,7 +8,7 @@ namespace Ase.Tests
     // todo: could try storing serialized json in IMemoryCache instead of I DistributedCache; wouldn't need to convert to byte array
     /// <summary>Serializes cached object to json then to bytes. 
     /// If object changes outside cache, the cached version does not change.</summary>
-    public class SerializedCache : ICache
+    public class SerializedCache : Basketcase.ICache
     {
         public SerializedCache(IDistributedCache cache) {
             c = cache;

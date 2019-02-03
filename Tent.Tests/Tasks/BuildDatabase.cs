@@ -1,5 +1,5 @@
-﻿using Ase;
-using static Ase.Table;
+﻿using Basketcase;
+using static Basketcase.Table;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Tent.Pages.blog;

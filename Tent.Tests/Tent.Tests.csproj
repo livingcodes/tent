@@ -1,13 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Ase\**" />
+    <EmbeddedResource Remove="Ase\**" />
+    <None Remove="Ase\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="BackpackTests.cs" />
     <Compile Remove="ICache.cs" />
+    <Compile Remove="SprocTests.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,6 +26,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tent\Tent.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Tasks\" />
   </ItemGroup>
 
 </Project>

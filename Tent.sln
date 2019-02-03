@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tent", "Tent\Tent.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tent.Tests", "Tent.Tests\Tent.Tests.csproj", "{245A8F8B-1D23-462E-B244-A69A6A07A60C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basketcase", "..\Basketcase\Basketcase\Basketcase.csproj", "{E5273D9F-B146-40CB-A4E1-CC29515C4541}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{245A8F8B-1D23-462E-B244-A69A6A07A60C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{245A8F8B-1D23-462E-B244-A69A6A07A60C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{245A8F8B-1D23-462E-B244-A69A6A07A60C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5273D9F-B146-40CB-A4E1-CC29515C4541}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5273D9F-B146-40CB-A4E1-CC29515C4541}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5273D9F-B146-40CB-A4E1-CC29515C4541}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5273D9F-B146-40CB-A4E1-CC29515C4541}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

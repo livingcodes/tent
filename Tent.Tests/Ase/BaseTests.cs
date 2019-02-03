@@ -1,14 +1,14 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
-using static Ase.Table;
+using static Basketcase.Table;
 
 namespace Ase.Tests
 {
     [TestClass] public class BaseTests
     {
-        protected static IDb db;
-        protected static ICache cache;
+        protected static Basketcase.IDb db;
+        protected static Basketcase.ICache cache;
         
         protected static void initialize() {
             //this.configuration = new ConfigurationBuilder()
@@ -27,11 +27,11 @@ namespace Ase.Tests
 
             var connectionString = "server=(LocalDb)\\MSSQLLocalDB; database=Tent; trusted_connection=true;";
 
-            db = new Db(
+            db = new Basketcase.Db(
                 new ConnectionFactory(connectionString),
-                new Reader(),
+                new Basketcase.Reader(),
                 cache,
-                new TableName_ClassName()
+                new Basketcase.TableName_ClassName()
             );
         }
         

@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
 
-namespace Ase.Tests
+namespace Basketcase.Tests
 {
     public class ConnectionFactory : IConnectionFactory
     {
