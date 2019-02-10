@@ -6,8 +6,6 @@ namespace Tent.Pages.blog
     public class PostPage : BasePage
     {
         public void OnGet() {
-            var db = new Pack();
-
             if (RouteData.Values.ContainsKey("slug")) {
                 var slug = RouteData.Values["slug"].ToString();
                 var post = db.SelectOne<Post>("WHERE Slug = @Slug", slug);

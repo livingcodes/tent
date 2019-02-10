@@ -16,7 +16,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\admin\" />
-    <Folder Include="Pages\blog\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\editor.html" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Basketcase\Basketcase\Basketcase.csproj" />

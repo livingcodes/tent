@@ -6,7 +6,6 @@ namespace Tent.Pages.blog
     public class IndexModel : BasePage
     {
         public void OnGet() {
-            var db = new Pack();
             Posts = db
                 .Paging(number:1, size:2)
                 .Select<Post>("ORDER BY PublishDate DESC");

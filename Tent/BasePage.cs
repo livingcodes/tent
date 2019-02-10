@@ -9,5 +9,12 @@ namespace Tent
             get { return ViewData["Title"].ToStringOr(""); }
             set { ViewData["Title"] = value; }
         }
+
+        public Data.Pack db { get {
+            if (_db == null)
+                _db = new Data.Pack();
+            return _db;
+        } }
+        Data.Pack _db;
     }
 }
