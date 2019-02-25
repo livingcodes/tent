@@ -5,13 +5,13 @@
     <a href="/blog">POSTS</a>
 </p>
 <h1>
-    @Model.Post.Title
+    @Model.Post?.Title
 </h1>
 <p>
-    @Model.Post.PublishDate.ToString("M/d/yy")
+    <a href="/blog/editpost/@RouteData.Values["slug"].ToString()">Edit</a>
     <br>
-    @Model.RouteData.Values["slug"]
+    @Model.Post?.PublishDate.ToString("M/d/yy")
 </p>
-<p>
-    @Html.Raw(Model.Post.Body)
-</p>
+<div class="preview">
+    @Html.Raw(Model.Post?.Body)
+</div>

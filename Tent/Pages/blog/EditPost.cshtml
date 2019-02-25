@@ -1,0 +1,39 @@
+﻿@page "{slug?}"
+@model EditPostPage
+
+<p>
+    <a href="/blog">POSTS</a>
+</p>
+<h1>
+    @Model.Post?.Title
+</h1>
+<p>
+    @Model.Post?.PublishDate.ToString("M/d/yy")
+    <br>
+    <a href="/blog/post/@RouteData.Values["slug"].ToString()">View</a>
+</p>
+<div class="preview">
+    @Html.Raw(Model.Post?.Body)
+</div>
+
+<style>
+    .editor textarea{display:block; width:300px; height:300px;}
+    .editor input[type='submit']{display:inline-block; padding:5px 15px; margin:3px 0 0 0;}
+    .editor input[name='save']{background-color:#0a0; color:#fff; border:1px solid #0b0;
+        font-weight:bold; padding:9px 35px;}
+    .editor input[name='cancel']{background-color:#dde; color:#999; border:1px solid #ddd;}
+</style>
+
+<form method="post" class="editor">
+    <textarea name="html">@Model.Post?.Body</textarea>
+    <input name="cancel" type="submit" value="Cancel" />
+    <input name="save" type="submit" value="Save" />
+</form>
+
+<script>
+    var editor = document.querySelector('.editor textarea');
+    var preview = document.querySelector('.preview');
+    editor.onkeyup = function(e) {
+        preview.innerHTML = editor.value;
+    }
+</script>

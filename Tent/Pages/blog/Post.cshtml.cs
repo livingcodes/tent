@@ -1,9 +1,11 @@
 using System;
-using Tent.Data;
 
 namespace Tent.Pages.blog
 {
-    public class PostPage : BasePage
+    public class PostPage : PostBasePage
+    {
+    }
+    public class PostBasePage : BasePage
     {
         public void OnGet() {
             if (RouteData.Values.ContainsKey("slug")) {
@@ -18,6 +20,23 @@ namespace Tent.Pages.blog
                 var queryString = Request.QueryString.Value;
                 var id = queryString.Split('=')[1];
                 Post = db.SelectById<Post>(id.ToInt());
+            }
+        }
+
+        public void OnPost() {
+            var save = Request.Form["save"].ToStringOr(null);
+            if (save == "Save") {
+                var html = Request.Form["html"].ToString();
+                var slug = RouteData.Values["slug"].ToString();
+                var post = db.SelectOne<Post>("WHERE Slug = @Slug", slug);
+                post.Body = html;
+                db.Update(post);
+                Post = post;
+            }
+            
+            var cancel = Request.Form["cancel"].ToStringOr(null);
+            if (cancel == "Cancel") {
+                Response.Redirect(Request.Path);
             }
         }
 
