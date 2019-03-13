@@ -25,6 +25,21 @@ namespace Tent.Tests.Tasks
             InsertPost();
         }
 
+        [TestMethod]
+        public void CreateWikiTable() { 
+            var sql = new Table("Wiki")
+                .AddColumn("Id", SqlType.Int, Syntax.Identity(1,1))
+                .AddColumn("Slug", SqlType.VarChar(100))
+                .AddColumn("Title", SqlType.VarChar(100), Syntax.NotNull)
+                .AddColumn("Body", SqlType.VarCharMax, Syntax.NotNull)
+                .AddColumn("PublishDate", SqlType.DateTime, Syntax.NotNull)
+                .End()
+                .Sql;
+            var affectedRows = db.Execute(sql);
+
+            insertWiki();
+        }
+
         public void InsertPost() {
             db.Insert(new Post {
                 Slug = "hello",
@@ -49,6 +64,15 @@ namespace Tent.Tests.Tasks
                 Title = "Four",
                 Body = "Four body...",
                 PublishDate = new DateTime(2018, 7, 6)
+            });
+        }
+
+        void insertWiki() { 
+            db.Insert(new Wiki.Wiki { 
+                Slug = "wiki-1",
+                Title = "Wiki One",
+                Body = "Wike ONE ...",
+                PublishDate = DateTime.Now
             });
         }
     }

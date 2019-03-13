@@ -1,0 +1,9 @@
+﻿@page "{slug?}"
+@model Tent.Wiki.WikiPageModel
+@{
+    ViewData["Title"] = "WikiPage";
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+<h2></h2>
+@Model.Body
