@@ -1,0 +1,42 @@
+﻿@page "{slug?}"
+@model Tent.Wiki.EditWikiModel
+
+<style>
+    .editor textarea{display:block; width:300px; height:300px;}
+    .editor input[type='submit']{display:inline-block; padding:5px 15px; margin:3px 0 0 0;}
+    .editor input[name='save']{background-color:#0a0; color:#fff; border:1px solid #0b0;
+        font-weight:bold; padding:9px 35px;}
+    .editor input[name='cancel']{background-color:#dde; color:#999; border:1px solid #ddd;}
+</style>
+
+<a href="/wiki/@RouteData.Values["slug"].ToString()">View</a>
+
+<form method="post" class="editor">
+    <input id="title" name="title" type="text" value="@Model.Entry?.Title" />
+    <br>
+    <textarea id="body" name="body">@Model.Entry?.Body</textarea>
+    
+    <input name="cancel" type="submit" value="Cancel" />
+    <input name="save" type="submit" value="Save" />
+</form>
+
+<section>
+    <h1 id="title-preview">@Model.Entry?.Title</h1>
+    <div id="body-preview">
+        @Html.Raw(Model.Entry?.Body)
+    </div>
+</section>
+
+<script>
+    var title = document.querySelector("#title");
+    var titlePreview = document.querySelector("#title-preview");
+    title.onkeyup = function(e) {
+        titlePreview.innerHTML = title.value;
+    }
+
+    var body = document.querySelector("#body");
+    var bodyPreview = document.querySelector("#body-preview");
+    body.onkeyup = function (e) {
+        bodyPreview.innerHTML = body.value;
+    }
+</script>
