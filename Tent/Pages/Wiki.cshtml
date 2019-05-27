@@ -1,9 +1,12 @@
 ﻿@page "{slug?}"
 @model Tent.Wiki.WikiPageModel
 @{
-    ViewData["Title"] = "WikiPage";
+    ViewData["Title"] = Model.Entry?.Title;
     Layout = "~/Pages/_Layout.cshtml";
 }
 
-<h2></h2>
-@Model.Body
+<h2>@Model.Entry?.Title</h2>
+@Model.Entry?.Body
+<p>
+    @Model.Entry?.PublishDate.ToString("M/d/yy")
+</p>

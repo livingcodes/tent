@@ -2,7 +2,7 @@
 {
     public class WikiPageModel : BasePage
     {
-        public string Body;
+        public Wiki Entry;
 
         public void OnGet() {
             var slug = RouteData.Values["slug"].ToStringOr(null);
@@ -10,9 +10,11 @@
                 Title = "Slug not found";
                 return;
             }
-            var article = db.SelectOne<Wiki>("WHERE Slug = @Slug", slug);
-            Title = article.Title;
-            Body = article.Body;
+            Entry = db.SelectOne<Wiki>("WHERE Slug = @Slug", slug);
+            if (Entry == null)
+                return;
+
+            Title = Entry.Title;
         }
     }
 }
