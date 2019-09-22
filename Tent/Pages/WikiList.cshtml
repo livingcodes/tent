@@ -1,0 +1,18 @@
+﻿@page
+@model Tent.Pages.WikiListModel
+@{
+    ViewData["Title"] = "Wiki List";
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+<h2>Wiki List</h2>
+<ul>
+    @foreach (var wiki in Model.WikiList) {
+    <li>
+        <a href="wiki/@wiki.Slug">
+            @wiki.Title
+        </a>
+    </li>
+    }
+</ul>
+
