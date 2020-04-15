@@ -4,7 +4,7 @@ namespace Tent.Pages
 {
     public class IndexModel : AuthenticatedPage
     {
-        public IndexModel(ICryptographer cryptographer) : base(cryptographer) {}
+        public IndexModel(ICrypto cryptographer) : base(cryptographer) {}
 
         public void OnGet() {
             var userCookie = GetUserCookie();

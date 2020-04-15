@@ -7,11 +7,10 @@ namespace Tent
 {
     public class AuthenticatedPage : PageModel
     {
-        public AuthenticatedPage(ICryptographer cryptographer) =>
-            this.cryptographer = cryptographer;
+        public AuthenticatedPage(ICrypto crypto) =>
+            this.crypto = crypto;
 
-        public UserCookie GetUserCookie() =>
-            Try(
+        public UserCookie GetUserCookie() => Try(
                 () => userCookie._(decrypt)._(deserialize),
                 () => new UserCookie()
             );
@@ -20,19 +19,19 @@ namespace Tent
             setCookie( "user", cookie._(toJson)._(encrypt), Now.AddYears(1) );
 
         public void SetUserCookie(User user) =>
-            user._(buildUserCookie)._(SetUserCookie);
+            user._(buildCookie)._(SetUserCookie);
 
         #region private
-        ICryptographer cryptographer;
+        ICrypto crypto;
         string userCookie => Request.Cookies["user"];
         string toJson(object x) =>
             Newtonsoft.Json.JsonConvert.SerializeObject(x);
         string encrypt(string json) =>
-            cryptographer.Encrypt(json);
+            crypto.Encrypt(json);
         UserCookie deserialize(string json) =>
             Newtonsoft.Json.JsonConvert.DeserializeObject<UserCookie>(json);
         string decrypt(string cookie) =>
-            cryptographer.Decrypt(cookie); // exception if null (i.e. cookie missing)
+            crypto.Decrypt(cookie); // exception if null (i.e. cookie missing)
         void setCookie(string key, string value, DateTime expiration) =>
             Response.Cookies.Append(
                 key: key,
@@ -41,7 +40,7 @@ namespace Tent
                     Expires = expiration
                 }
             );
-        UserCookie buildUserCookie(User user) =>
+        UserCookie buildCookie(User user) =>
             user == null
                 ? new UserCookie()
                 : new UserCookie() {

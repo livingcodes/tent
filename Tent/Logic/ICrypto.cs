@@ -2,16 +2,16 @@
 
 namespace Tent.Logic
 {
-    public interface ICryptographer
+    public interface ICrypto
     {
         string Encrypt(string value);
         string Decrypt(string value);
     }
 
-    public class Cryptographer : ICryptographer
+    public class Crypto : ICrypto
     {
         // note: encrypted value expires and then can't be decrypted
-        public Cryptographer(IDataProtectionProvider provider) =>
+        public Crypto(IDataProtectionProvider provider) =>
             protector = provider.CreateProtector("encrypt-cookie");
         
         IDataProtector protector;

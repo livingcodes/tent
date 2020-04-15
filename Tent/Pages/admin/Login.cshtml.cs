@@ -19,7 +19,7 @@ namespace Tent.Pages.admin
     {
         public LoginPage(
             ILogger<LoginPage> logger,
-            Logic.ICryptographer cryptographer
+            Logic.ICrypto cryptographer
         ) : base(cryptographer) {
             this.logger = logger;
         }
