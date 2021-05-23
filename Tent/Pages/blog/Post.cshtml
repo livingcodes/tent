@@ -1,4 +1,4 @@
-﻿@page "{slug?}"
+﻿@page "/post/{slug?}"
 @model Tent.Pages.blog.PostPage
 
 <p>
@@ -8,7 +8,7 @@
     @Model.Post?.Title
 </h1>
 <p>
-    <a href="/blog/editpost/@RouteData.Values["slug"].ToString()">Edit</a>
+    <a href="/post/edit/@Model.Post?.Id">Edit</a>
     <br>
     @Model.Post?.PublishDate.ToString("M/d/yy")
 </p>

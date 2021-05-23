@@ -1,4 +1,4 @@
-﻿@page "{slug?}"
+﻿@page "/post/edit/{id}"
 @model EditPostPage
 
 <p>
@@ -10,7 +10,7 @@
 <p>
     @Model.Post?.PublishDate.ToString("M/d/yy")
     <br>
-    <a href="/blog/post/@RouteData.Values["slug"].ToString()">View</a>
+    <a href="/post/@Model.Post?.Slug">View</a>
 </p>
 <div class="preview">
     @Html.Raw(Model.Post?.Body)
