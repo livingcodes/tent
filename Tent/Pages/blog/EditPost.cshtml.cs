@@ -1,6 +1,4 @@
-namespace Tent.Pages.blog
+namespace Tent.Pages.Blog;
+public class EditPostPage : PostBasePage
 {
-    public class EditPostPage : PostBasePage
-    {
-    }
 }

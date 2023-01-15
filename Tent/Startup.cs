@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-namespace Tent {
+namespace Tent;
 public class Startup {
     public void ConfigureServices(IServiceCollection services) {
         services.AddScoped<Logic.ICrypto, Logic.Crypto>();
@@ -22,4 +21,4 @@ public class Startup {
             .UseRouting()
             .UseEndpoints(x => x.MapRazorPages());
     }
-} }
+}
