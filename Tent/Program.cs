@@ -1,12 +1,16 @@
-﻿namespace Tent;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-public class Program
-{
-   public static void Main(string[] args) {
-      WebHost.CreateDefaultBuilder(args)
-         .UseStartup<Startup>()
-         .Build()
-         .Run();
-   }
-}
+﻿using Tent.Logic;
+
+var builder = WebApplication.CreateBuilder(args);
+var svc = builder.Services;
+svc.AddScoped<ICrypto, Crypto>()
+   .AddRazorPages();
+
+var app = builder.Build();
+if (app.Environment.IsDevelopment())
+   app.UseDeveloperExceptionPage();
+app.UseHttpsRedirection()
+   .UseStaticFiles()
+   .UseRouting()
+   .UseAuthorization();
+app.MapRazorPages();
+app.Run();
