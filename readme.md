@@ -103,7 +103,11 @@ public class ConnectionFactory : IConnectionFactory
 }
 ```
 
-# To Do
+# CMS To Do
+* Reset password
+* Change password
+
+# DB To Do
 * Handle nullable value types datetime
 * Cache class properties
 * Configuration to insert or update properties and/or fields

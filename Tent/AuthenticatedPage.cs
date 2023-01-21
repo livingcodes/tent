@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿namespace Tent;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using Tent.Logic;
-namespace Tent;
 using static Shorthand;
 public class AuthenticatedPage : PageModel
 {
