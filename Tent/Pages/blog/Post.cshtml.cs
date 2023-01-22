@@ -1,5 +1,7 @@
 namespace Tent.Pages.Blog;
-    using System;
+using System;
+using Tent.Common;
+
 public class PostPage : PostBasePage {}
 
 public class PostBasePage : BasePage {

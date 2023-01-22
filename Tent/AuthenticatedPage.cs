@@ -1,9 +1,9 @@
 ﻿namespace Tent;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
+using Tent.Auth;
 using Tent.Logic;
 using static Shorthand;
-public class AuthenticatedPage : PageModel
+public class AuthenticatedPage : BasePage
 {
    public AuthenticatedPage(ICrypto crypto) =>
       this.crypto = crypto;

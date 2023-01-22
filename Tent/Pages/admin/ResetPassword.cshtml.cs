@@ -1,22 +1,27 @@
 namespace Tent.Pages.Admin;
+using Tent.Auth.Password;
 using Tent.Logic;
 public class ResetPasswordModel : AuthenticatedPage
 {
    public ResetPasswordModel(ICrypto crypto) : base(crypto) {}
+   public string Message;
 
-   public string NewPassword, ErrorMessage; // output
+   public void OnGet() {
+      var userId = QueryString("user-id").ToInt();
+      if (userId == 0) {
+         Message = "User ID required"; return; }
+      var resetPasswordId = QueryString("code");
+      if (resetPasswordId.NotSet()) {
+         Message = "Confirmation code required"; return; }
 
-   public void OnPost() {
-      var email = Request.Form["email"].FirstOrDefault();
-      if (email.NotSet()) {
-         ErrorMessage = "Email is required."; return; }
+      var verify = new VerifyCode(userId, resetPasswordId).Execute();
+      if (verify.Failed) {
+         Message = verify.ErrorMessage; return; }
 
-      // todo: verify email (send link)
+      var reset = new ResetPassword(verify.Value.UserId).Execute();
+      if (reset.Failed) {
+         Message = reset.ErrorMessage; return; }
 
-      var result = new ResetPassword(email).Execute();
-      if (result.Failed) {
-         ErrorMessage = result.ErrorMessage; return; }
-
-      NewPassword = result.Value;
+      Message = $"New password: {reset.Value}";
    }
 }

@@ -27,8 +27,4 @@
     <ProjectReference Include="..\Tent\Tent.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Tasks\" />
-  </ItemGroup>
-
 </Project>

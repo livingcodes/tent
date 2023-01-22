@@ -1,4 +1,4 @@
-﻿using System;
+﻿namespace Tent.Common;
 public class Shorthand {
     public static T Try<T>(Func<T> @try, Func<T> @catch) {
         try {

@@ -1,3 +1,5 @@
+using Tent.Common;
+
 namespace Tent.Wiki
 {
     public class EditWikiModel : BasePage
