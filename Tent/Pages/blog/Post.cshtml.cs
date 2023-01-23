@@ -35,7 +35,7 @@ public class PostBasePage : BasePage {
             post.Slug = slug;
             post.Title = title;
             post.Body = html;
-            post.PublishDate = DateTime.Now;
+            post.PublishDate = Now;
             db.Update(post);
             Post = post;
          } else {
@@ -43,7 +43,7 @@ public class PostBasePage : BasePage {
             post.Slug = slug;
             post.Title = title;
             post.Body = html;
-            post.PublishDate = DateTime.Now;
+            post.PublishDate = Now;
             (post.Id, _) = db.Insert(post);
             Post = post;
          }

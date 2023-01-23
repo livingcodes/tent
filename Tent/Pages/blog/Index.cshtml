@@ -3,6 +3,10 @@
 
 <h1>Posts</h1>
 <hr>
+<a href="/post/edit/0">
+   Create New Post
+</a>
+<hr>
 @foreach(var post in @Model.Posts) {
     <h2>
         <a href="/post/@post.Slug">
