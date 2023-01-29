@@ -3,15 +3,25 @@ using System;
 
 public static class Extensions
 {
-    public static string ToStringOr(this object value, string ifNull) =>
-       value == null
-          ? ifNull
-          : value.ToString();
+   public static string ToStringOr(this object value, string ifNull) =>
+      value == null
+         ? ifNull
+         : value.ToString();
 
-    public static int ToInt(this string text, int @default = 0) =>
-       int.TryParse(text, out var result)
-          ? result
-          : @default;
+   public static int ToInt(this string text, int @default = 0) =>
+      int.TryParse(text, out var result)
+         ? result
+         : @default;
+
+   public static DateTime ToDate(this string text, DateTime? @default = null) {
+      if (!@default.HasValue)
+         @default = DateTime.MinValue;
+      var succeeded = DateTime.TryParse(text, out var result);
+      if (!succeeded)
+         result = @default.Value;
+      return result;
+   }
+         
 
     public static bool NotSet(this object obj) =>
        obj == null
