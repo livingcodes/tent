@@ -31,7 +31,7 @@ public class PostBasePage : BasePage {
          var html = Request.Form["html"].ToString();
          var slug = Request.Form["slug"].ToString();
          if (id > 0) {
-            var post = db.SelectOne<Post>("WHERE Slug = @Slug", slug);
+            var post = db.SelectById<Post>(id);
             post.Slug = slug;
             post.Title = title;
             post.Body = html;
