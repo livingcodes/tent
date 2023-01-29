@@ -1,5 +1,6 @@
 ﻿namespace Tent;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Reflection;
 using Tent.Common;
 
 public class BasePage : PageModel
@@ -19,6 +20,24 @@ public class BasePage : PageModel
 
    protected string Form(string name) =>
       Request.Form[name].FirstOrDefault();
+   
+   protected T Form<T>() {
+      var inst = Activator.CreateInstance<T>();
+      var properties = typeof(T).GetProperties(BindingFlags.Public| BindingFlags.Instance);
+      foreach (var property in properties) {
+         if (Request.Form.ContainsKey(property.Name))
+            property.SetValue(inst, Form(property.Name));
+      }
+      var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance);
+      foreach (var field in fields) {
+         if (Request.Form.ContainsKey(field.Name)) {
+            string formString = Form(field.Name);
+            object value = Convert.ChangeType(formString, field.FieldType);
+            field.SetValue(inst, value);
+         }
+      }
+      return inst;
+   }
 
    protected string QueryString(string key) =>
       Request.Query[key].FirstOrDefault();

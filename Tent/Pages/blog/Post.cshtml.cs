@@ -24,28 +24,17 @@ public class PostBasePage : BasePage {
    }
 
    public void OnPost() {
-      var save = Request.Form["save"].ToStringOr(null);
-      if (save == "Save") {
-         var id = Request.Form["Id"].ToString().ToInt();
-         var title = Request.Form["title"].ToString();
-         var html = Request.Form["html"].ToString();
-         var slug = Request.Form["slug"].ToString();
-         if (id > 0) {
-            var post = db.SelectById<Post>(id);
-            post.Slug = slug;
-            post.Title = title;
-            post.Body = html;
-            post.PublishDate = Now;
-            db.Update(post);
-            Post = post;
+      if (Form("save") == "Save") {
+         Post = Form<Post>();
+         if (Post.Id > 0) {
+            var post = db.SelectById<Post>(Post.Id);
+            if (post == null)
+               return; // post id not found
+            Post.PublishDate = Now;
+            db.Update(Post);
          } else {
-            var post = new Post();
-            post.Slug = slug;
-            post.Title = title;
-            post.Body = html;
-            post.PublishDate = Now;
-            (post.Id, _) = db.Insert(post);
-            Post = post;
+            Post.PublishDate = Now;
+            (Post.Id, _) = db.Insert(Post);
          }
       }
             

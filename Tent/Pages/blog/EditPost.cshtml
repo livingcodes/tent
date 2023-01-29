@@ -16,22 +16,22 @@
 <form method="post" class="editor">
     <label for="Id">Id</label>
     <input name="Id" id="Id" type="text" value="@Model.Post?.Id" readonly>
-
+    <br>
     <label for="Slug">Slug</label>
     <input name="Slug" id="Slug" type="text" value="@Model.Post?.Slug">
-
+    <br>
     <label for="Title">Title</label>
     <input name="Title" id="Title" type="text" value="@Model.Post?.Title">
-
+    <br>
     <label for="Body">Body</label>
-    <textarea name="html" id="Body">@Model.Post?.Body</textarea>
+    <textarea name="Body" id="Body">@Model.Post?.Body</textarea>
     <div class="preview">
         @Html.Raw(Model.Post?.Body)
     </div>
-
+    <br>
     <label for="PublishDate">Publish Date</label>
-    <input name="PublishDate" id="PublishDate" type="text" value="@Model.Post?.PublishDate.ToString("yyyy-MM-dd HH:mm:ss")" disabled>
-
+    <input name="PublishDate" id="PublishDate" type="text" value="@Model.Post?.PublishDate.ToString("yyyy-MM-dd HH:mm:ss")" readonly>
+    <br>
     <input name="cancel" type="submit" value="Cancel">
     <input name="save" type="submit" value="Save">
 </form>
