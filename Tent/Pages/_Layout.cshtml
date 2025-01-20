@@ -1,29 +1,29 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] | Tent</title>
-    <link rel="stylesheet" href="~/css/site.css" />
-    @RenderSection("Header", required:false)
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"] | Tent</title>
+  <link rel="stylesheet" href="~/css/site.css" />
+  @RenderSection("Header", required:false)
 </head>
 <body>
-    <nav>
-        <ul class="nav navbar-nav">
-            <li><a asp-page="/Index">Home</a></li>
-            <li><a asp-page="/About">About</a></li>
-            <li><a asp-page="/Example">Example</a></li>
-            <li><a asp-page="/blog/index">Blog</a></li>
-            <li><a href="/wikilist">Wiki</a></li>
-        </ul>
-    </nav>
-    <div class="container body-content">
-        @RenderBody()
-        <hr>
-        <footer>
-            <p>&copy; @DateTime.Now.Year Tent</p>
-        </footer>
-    </div>
-    @RenderSection("Scripts", required:false)
+  <nav>
+    <ul class="nav navbar-nav">
+      <li><a asp-page="/Index">Home</a></li>
+      <li><a asp-page="/About">About</a></li>
+      <li><a asp-page="/Example">Example</a></li>
+      <li><a asp-page="/blog/index">Blog</a></li>
+      <li><a href="/wikilist">Wiki</a></li>
+    </ul>
+  </nav>
+  <div class="container body-content">
+    @RenderBody()
+    <hr>
+    <footer>
+      <p>&copy; @DateTime.Now.Year Tent</p>
+    </footer>
+  </div>
+  @RenderSection("Scripts", required:false)
 </body>
 </html>

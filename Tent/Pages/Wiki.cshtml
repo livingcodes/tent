@@ -1,12 +1,12 @@
 ﻿@page "{slug?}"
 @model Tent.Wiki.WikiPageModel
 @{
-    ViewData["Title"] = Model.Entry?.Title;
-    Layout = "~/Pages/_Layout.cshtml";
+  ViewData["Title"] = Model.Entry?.Title;
+  Layout = "~/Pages/_Layout.cshtml";
 }
 <p><a href="/editwiki/@RouteData.Values["slug"].ToString()">Edit</a></p>
 <h2>@Model.Entry?.Title</h2>
 @Html.Raw(Model.Entry?.Body)
 <p>
-    @Model.Entry?.PublishDate.ToString("M/d/yy")
+  @Model.Entry?.PublishDate.ToString("M/d/yy")
 </p>

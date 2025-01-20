@@ -1,20 +1,20 @@
 ﻿@page
 @model Tent.Pages.Admin.LoginPage
 @functions{
-    public async Task<IActionResult> OnPostAsync() {return Page();}
+  public async Task<IActionResult> OnPostAsync() {return Page();}
 }
 
 <form method="post">
-    @Html.ValidationSummary()
+  @Html.ValidationSummary()
 
-    <input asp-for="Login.Email" />
-    <span asp-validation-for="Login.Email" class="text-danger"></span>
-    <br>
+  <input asp-for="Login.Email" />
+  <span asp-validation-for="Login.Email" class="text-danger"></span>
+  <br>
 
-    <input type="password" placeholder="Password" asp-for="Login.Password" />
-    <br>
-    <span asp-validation-for="Login.Password"></span>
-    <br>
+  <input type="password" placeholder="Password" asp-for="Login.Password" />
+  <br>
+  <span asp-validation-for="Login.Password"></span>
+  <br>
 
-    <input type="submit" value="Login" />
+  <input type="submit" value="Login" />
 </form>

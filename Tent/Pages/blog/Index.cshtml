@@ -4,18 +4,18 @@
 <h1>Posts</h1>
 <hr>
 <a href="/post/edit/0">
-   Create New Post
+  Create New Post
 </a>
 <hr>
 @foreach(var post in @Model.Posts) {
-    <h2>
-        <a href="/post/@post.Slug">
-            @post.Title
-        </a>
-    </h2>
-    <p>@post.PublishDate.ToString("M/d/yyyy")</p>
-    <div class="post">
-        @Html.Raw(post.Body)
-    </div>
-    <hr>
+  <h2>
+    <a href="/post/@post.Slug">
+      @post.Title
+    </a>
+  </h2>
+  <p>@post.PublishDate.ToString("M/d/yyyy")</p>
+  <div class="post">
+    @Html.Raw(post.Body)
+  </div>
+  <hr>
 }

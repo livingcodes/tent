@@ -1,21 +1,12 @@
-using System;
-using System.Collections.Generic;
+namespace Tent.Pages;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-
-namespace Tent.Pages
+public class ErrorModel : PageModel
 {
-    public class ErrorModel : PageModel
-    {
-        public string RequestId { get; set; }
+  public string RequestId { get; set; }
+  public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-
-        public void OnGet()
-        {
-            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-        }
-    }
+  public void OnGet() {
+    RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+  }
 }

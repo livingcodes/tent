@@ -1,22 +1,12 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using System;
-
-namespace Tent.Data
+﻿namespace Tent.Data;
+using Microsoft.Extensions.Caching.Memory;
+/// <summary>Stores reference to cached object.
+/// If object changes outside cache, it changes in cache too.</summary>
+public class InMemoryCache(IMemoryCache c) : Basketcase.ICache
 {
-    /// <summary>Stores reference to cached object. If object changes outside cache, it changes in cache too.</summary>
-    public class InMemoryCache : Basketcase.ICache
-    {
-        public InMemoryCache(IMemoryCache c) {
-            this.c = c;
-        }
-        IMemoryCache c;
+  public T Get<T>(string key) => c.Get<T>(key);
 
-        public T Get<T>(string key) {
-            return c.Get<T>(key);
-        }
-
-        public void Set(string key, object value, int seconds) {
-            c.Set(key, value, new TimeSpan(0, 0, seconds));
-        }
-    }
+  public void Set(string key, object val, int sec) {
+    c.Set(key, val, new TimeSpan(0, 0, sec));
+  }
 }

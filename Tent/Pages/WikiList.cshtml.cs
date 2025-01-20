@@ -1,11 +1,7 @@
-﻿namespace Tent.Pages
+﻿namespace Tent.Pages;
+public class WikiListModel:BasePage
 {
-    using System.Collections.Generic;
-
-    public class WikiListModel : BasePage
-    {
-        public List<Wiki.Wiki> WikiList = new List<Wiki.Wiki>();
-        public void OnGet() =>
-            WikiList = db.Sel<Wiki.Wiki>();
-    }
+  public List<Wiki.Wiki> WikiList = new();
+  public void OnGet() =>
+    WikiList = db.Sel<Wiki.Wiki>();
 }
