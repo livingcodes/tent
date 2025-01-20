@@ -5,7 +5,7 @@ public record ResetPassword(int userId)
    public Result<string> Execute() {
       var password = new PasswordGenerator().Generate();
       var db = new Pack();
-      var user = db.SelectById<User>(userId);
+      var user = db.SelById<User>(userId);
       if (user == null)
          return Result<string>.Failure(null, "User ID not found");
 

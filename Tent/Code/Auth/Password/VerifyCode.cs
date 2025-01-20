@@ -16,7 +16,7 @@ public class VerifyCode : Command {
          return Result<VerificationCode>.Failure(null, "Verification code expired");
       x.IsReset = true;
       x.DateReset = Now;
-      db.Update(x);
+      db.Upd(x);
       return Result<VerificationCode>.Success(x);
    }
 }
@@ -25,7 +25,7 @@ file static class DbExt {
    public static VerificationCode GetVerificationCode(
       this Pack db, int userId, string code
    ) =>
-      db.SelectOne<VerificationCode>(
+      db.Sel1<VerificationCode>(
          "WHERE UserId = @UserId AND Code = @Code", 
          userId, code);
 }

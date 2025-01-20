@@ -1,12 +1,8 @@
-﻿using System.Data;
-using System.Data.SqlClient;
-
-namespace Tent.Data
+﻿namespace Tent.Data;
+using System.Data;
+public class SqlConnectionFactory : Basketcase.IConFct
 {
-    public class SqlConnectionFactory : Basketcase.IConnectionFactory
-    {
-        public IDbConnection Create() {
-            return new SqlConnection("server=(LocalDb)\\MSSQLLocalDB; database=Tent; trusted_connection=true;");
-        }
+    public IDbConnection Crt() {
+        return new Microsoft.Data.SqlClient.SqlConnection("server=(LocalDb)\\MSSQLLocalDB; database=Tent; trusted_connection=true;");
     }
 }

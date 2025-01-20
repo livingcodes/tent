@@ -12,7 +12,7 @@ namespace Tent.Wiki
                 Title = "Slug not found";
                 return;
             }
-            Entry = db.SelectOne<Wiki>("WHERE Slug = @Slug", slug);
+            Entry = db.Sel1<Wiki>("WHERE Slug = @Slug", slug);
             if (Entry == null)
                 return;
 

@@ -12,7 +12,7 @@ public class Login
    Pack db;
 
    public IResult<User> Execute() {
-      var user = db.SelectOne<User>("where email = @email", email);
+      var user = db.Sel1<User>("where email = @email", email);
          
       if (user == null)
          return Result<User>.Failure(null, "Email is not registered");

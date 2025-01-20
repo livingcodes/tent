@@ -26,7 +26,7 @@ public class BaseTests
          new SerializedCached(
             distributedCache
          ),
-         new TableName_ClassName()
+         new TblNm_ClsNm()
       );
    }
 

@@ -6,6 +6,6 @@
     {
         public List<Wiki.Wiki> WikiList = new List<Wiki.Wiki>();
         public void OnGet() =>
-            WikiList = db.Select<Wiki.Wiki>();
+            WikiList = db.Sel<Wiki.Wiki>();
     }
 }

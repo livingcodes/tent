@@ -13,13 +13,13 @@ public class SignUp
    Pack db;
 
    public IResult Execute() {
-      var user = db.SelectOne<User>("WHERE Email = @Email", email);
+      var user = db.Sel1<User>("WHERE Email = @Email", email);
       if (user != null)
             return Result.Failure("Email is not available");
          
       var salt = new Salt();
       var passwordHash = new Hash(password, salt.AsByteArray).AsString;
-      var id = db.Insert(new User() {
+      var id = db.Ins(new User() {
             Email = email,
             PasswordHash = passwordHash,
             Salt = salt.AsString

@@ -13,7 +13,7 @@ namespace Tent.Wiki
                 return;
             }
 
-            Entry = db.SelectOne<Wiki>("WHERE Slug = @Slug", slug);
+            Entry = db.Sel1<Wiki>("WHERE Slug = @Slug", slug);
         }
 
         public void OnPost() {
@@ -26,10 +26,10 @@ namespace Tent.Wiki
             var save = Request.Form["save"].ToStringOr(null);
             if (save == "Save") {
                 var slug = RouteData.Values["slug"].ToString();
-                var entry = db.SelectOne<Wiki>("WHERE Slug = @Slug", slug);
+                var entry = db.Sel1<Wiki>("WHERE Slug = @Slug", slug);
                 entry.Title = Request.Form["title"].ToStringOr(null);
                 entry.Body = Request.Form["body"].ToStringOr(null);
-                db.Update(entry);
+                db.Upd(entry);
                 Entry = entry;
             }
         }

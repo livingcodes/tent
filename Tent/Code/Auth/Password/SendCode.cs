@@ -18,7 +18,7 @@ public class SendCode : Command
          return Result.Failure("Email not found");
       
       var x = new VerificationCode(user.Id);
-      (_, x.Id) = db.Insert(x);
+      (_, x.Id) = db.Ins(x);
 
       send.Send($"Reset Password Verification Code: {x.Code}");
 

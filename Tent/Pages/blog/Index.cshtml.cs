@@ -4,8 +4,8 @@ public class IndexModel : BasePage
 {
    public void OnGet() {
       Posts = db
-         .Paging(number:1, size:2)
-         .Select<Post>("ORDER BY PublishDate DESC");
+         .Pg(num:1, sz:2)
+         .Sel<Post>("ORDER BY PublishDate DESC");
    }
 
    public List<Post> Posts { get; set; }
