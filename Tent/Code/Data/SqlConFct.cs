@@ -3,5 +3,7 @@ using System.Data;
 public class SqlConFct : Basketcase.IConFct
 {
   public IDbConnection Crt() => new Microsoft.Data.SqlClient
-    .SqlConnection("server=(LocalDb)\\MSSQLLocalDB; database=Tent; trusted_connection=true;");
+    .SqlConnection("server=(LocalDb)\\MSSQLLocalDB;"
+    + "database=Tent;"
+    + "trusted_connection=true;");
 }

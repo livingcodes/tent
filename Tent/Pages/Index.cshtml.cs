@@ -1,13 +1,13 @@
 ﻿namespace Tent.Pages;
 using Tent.Logic;
-public class IndexModel:AuthenticatedPage
+public class IndexModel:AthPg
 {
   public IndexModel(ICrypto cryptographer)
   :base(cryptographer) {}
 
   public void OnGet() {
-    var userCookie = GetUserCookie();
-    ViewData["LoggedIn"] = userCookie.Authenticated.ToString();
-    ViewData["Email"] = userCookie.Email;
+    var usrCkie = GetUsrCkie();
+    ViewData["LoggedIn"] = usrCkie.Authenticated.ToString();
+    ViewData["Email"] = usrCkie.Email;
   }
 }

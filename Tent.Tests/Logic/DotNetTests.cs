@@ -1,6 +1,5 @@
 ﻿namespace Tent.Tests.Logic;
-[TestClass]
-public class DotNetTests : BaseTests
+[tc]public class DotNetTests:BaseTests
 {
   /*
   // Can replace
@@ -22,33 +21,28 @@ public class DotNetTests : BaseTests
   object instance;
   */
 
-  [TestMethod]
-  public void NullCoalescingOperator() {
-    var value = new Value(2);
-    assert(value.AsInt == 2);
-    assert(value.AsString == "2");
+  [tm]public void NullCoalescingOperator() {
+    var val = new Val(2);
+    assert(val.AsInt == 2);
+    assert(val.AsString == "2");
     // does NOT increment b/c private asString is set (not null)
-    assert(value.AsStringPlus1 == "2");
+    assert(val.AsStringPlus1 == "2");
 
-    value = new Value(2);
-    assert(value.AsInt == 2);
+    val = new Val(2);
+    assert(val.AsInt == 2);
     // does increment b/c private asString is null
-    assert(value.AsStringPlus1 == "3");
-    assert(value.AsString == "3");
+    assert(val.AsStringPlus1 == "3");
+    assert(val.AsString == "3");
     // does NOT increment b/c private asString is set now (not null)
-    assert(value.AsStringPlus1 == "3");
+    assert(val.AsStringPlus1 == "3");
   }
 }
 
-class Value
+class Val(int input = 0)
 {
-  public Value(int input = 0) {
-    AsInt = input;
-  }
+  public int AsInt { get; } = input;
 
-  public string AsString => asString ?? (asString = AsInt.ToString());
-  public string AsStringPlus1 => asString ?? (asString = (AsInt + 1).ToString());
-  string asString;
-
-  public int AsInt { get; }
+  public str AsString => asString ?? (asString = AsInt.ToString());
+  public str AsStringPlus1 => asString ?? (asString = (AsInt + 1).ToString());
+  str asString;
 }

@@ -1,31 +1,28 @@
 namespace Tent.Pages.Blog;
-using System;
 using Tent.Common;
 
 public class PostPage : PostBasePage {}
 
-public class PostBasePage : BasePage {
+public class PostBasePage : BasePg {
   public void OnGet() {
-    if (RouteData.Values.ContainsKey("id")) {
-      var id = RouteData.Values["id"].ToStringOr("").ToInt();
+    if (RteHas("id")) {
+      int id = Rte("id").Int();
       Post = db.SelById<Post>(id);
-    } else if (RouteData.Values.ContainsKey("slug")) {
-      var slug = RouteData.Values["slug"].ToString();
+    } else if (RteHas("slug")) {
+      str slug = Rte("slug");
       Post = db.Sel1<Post>("WHERE Slug = @Slug", slug);
     } else if (!Request.QueryString.HasValue) {
-      var mostRecent = db.Sel1<Post>(
-        "ORDER BY PublishDate DESC");
-      Post = mostRecent;
+      Post = db.Sel1<Post>("ORDER BY PublishDate DESC"); // most recent
     } else {
-      var queryString = Request.QueryString.Value;
-      var id = queryString.Split('=')[1];
-      Post = db.SelById<Post>(id.ToInt());
+      str qryStr = Request.QueryString.Value;
+      int id = qryStr.Split('=')[1].Int();
+      Post = db.SelById<Post>(id);
     }
   }
 
   public void OnPost() {
-    if (Form("save") == "Save") {
-      Post = Form<Post>();
+    if (Frm("save") == "Save") {
+      Post = Frm<Post>();
       if (Post.Id > 0) {
         var post = db.SelById<Post>(Post.Id);
         if (post == null)
@@ -38,10 +35,9 @@ public class PostBasePage : BasePage {
       }
     }
             
-    var cancel = Request.Form["cancel"].ToStringOr(null);
-    if (cancel == "Cancel") {
+    var cancel = Frm("cancel");
+    if (cancel == "Cancel")
       Response.Redirect(Request.Path);
-    }
   }
 
   public Post Post { get; set; }
@@ -49,6 +45,6 @@ public class PostBasePage : BasePage {
 
 public class Post {
   public int Id;
-  public string Slug, Title, Body;
-  public DateTime PublishDate;
+  public str Slug, Title, Body;
+  public dte PublishDate;
 }

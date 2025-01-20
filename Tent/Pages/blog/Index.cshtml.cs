@@ -1,5 +1,5 @@
 namespace Tent.Pages.Blog;
-public class IndexModel : BasePage
+public class IndexModel : BasePg
 {
   public void OnGet() {
     Posts = db

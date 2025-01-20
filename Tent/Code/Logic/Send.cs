@@ -1,19 +1,19 @@
 ﻿namespace Tent.Logic;
 using System.Net.Mail;
 public interface ISend { 
-  void Send(string message);
+  void Send(str message);
 }
 
 public class DebugSend : ISend {
-  public void Send(string message) {
+  public void Send(str message) {
     System.Diagnostics.Debug.WriteLine(message);
   }
 }
 
 // Port = 587
 public class Emailer : ISend {
-  public Emailer(EmailConfig config, EmailTemplate template) { }
-  EmailConfig config; EmailTemplate mail;
+  public Emailer(EmlCfg config, EmlTemplate template) { }
+  EmlCfg config; EmlTemplate mail;
 
   public void Send(string message) {
     var smtp = new SmtpClient(config.host, config.port) 
@@ -25,7 +25,7 @@ public class Emailer : ISend {
   }
 }
 
-public record EmailConfig(string from, string host, int port);
+public record EmlCfg(str from, str host, int port);
 
-public record EmailTemplate(int id, string from, string to, 
-  string subject, string body);
+public record EmlTemplate(int id, str from, str to,
+  str subject, str body);

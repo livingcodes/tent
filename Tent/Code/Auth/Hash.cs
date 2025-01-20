@@ -2,32 +2,32 @@
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 public class Hash
 {
-  public Hash(string password, byte[] salt) {
-    this.password = password;
+  public Hash(str pw, byte[] salt) {
+    this.pw = pw;
     this.salt = salt;
-    AsByteArray = generate(password, salt);
+    AsByteArray = gen(pw, salt);
   }
 
-  public Hash(string password, string salt) {
-    this.password = password;
+  public Hash(str pw, str salt) {
+    this.pw = pw;
     this.salt = Convert.FromBase64String(salt);
-    AsByteArray = generate(password, this.salt);
+    AsByteArray = gen(pw, this.salt);
   }
+
+  str pw;
+  byte[] salt;
 
   public byte[] AsByteArray { get; }
 
-  public string AsString => asString 
+  public str AsString => asString 
     ?? (asString = Convert.ToBase64String(AsByteArray));
-  string asString;
+  str asString;
 
   public override string ToString() => AsString;
 
-  string password;
-  byte[] salt;
-
-  byte[] generate(string password, byte[] salt) {
+  byte[] gen(str pw, byte[] salt) {
     byte[] hash = KeyDerivation.Pbkdf2(
-      password,
+      pw,
       salt,
       KeyDerivationPrf.HMACSHA256,
       iterationCount: 10000,

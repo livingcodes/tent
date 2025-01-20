@@ -5,15 +5,15 @@ using System.ComponentModel.DataAnnotations;
 public class Login
 {
   [Required, EmailAddress]
-  public string Email { get; set; }
+  public str Email { get; set; }
 
   [Required]
   [StringLength(32, MinimumLength = 8)]
   [DataType(DataType.Password)]
-  public string Password { get; set; }
+  public str Password { get; set; }
 }
 
-public class LoginPage : AuthenticatedPage
+public class LoginPage : AthPg
 {
   public LoginPage(
     ILogger<LoginPage> logger,
@@ -37,15 +37,14 @@ public class LoginPage : AuthenticatedPage
     if (!ModelState.IsValid)
       return Page();
          
-    var result = new Auth.Login(Login.Email, Login.Password).Execute();
+    var result = new Auth.Login(Login.Email, Login.Password).Exe();
     if (result.Failed) {
-      ModelState.AddModelError("Login", result.ErrorMessage);
+      ModelState.AddModelError("Login", result.ErrMsg);
       return Page();
     }
-         
-    var user = result.Value;
-    SetUserCookie(user);
-
+    
+    var usr = result.Val;
+    SetUsrCkie(usr);
     return RedirectToPage("/Index");
   }
 }

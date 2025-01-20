@@ -2,7 +2,6 @@
 @model Tent.Wiki.WikiPageModel
 @{
   ViewData["Title"] = Model.Entry?.Title;
-  Layout = "~/Pages/_Layout.cshtml";
 }
 <p><a href="/editwiki/@RouteData.Values["slug"].ToString()">Edit</a></p>
 <h2>@Model.Entry?.Title</h2>

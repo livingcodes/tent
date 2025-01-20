@@ -1,14 +1,12 @@
 ﻿namespace Tent.Tests;
 using Tent.Auth;
-[TestClass]
-public class HashTests:BaseTests
+[tc]public class HashTests:BaseTests
 {
-  [TestMethod]
-  public void HashStringsMatch() {
-    string password = "password";
+  [tm]public void HashStringsMatch() {
+    str pw = "password";
     var salt = new Salt();
-    var hash1 = new Hash(password, salt.AsByteArray).AsString;
-    var hash2 = new Hash(password, salt.AsByteArray).AsString;
+    var hash1 = new Hash(pw, salt.AsByteArray).AsString;
+    var hash2 = new Hash(pw, salt.AsByteArray).AsString;
     assert(hash1 == hash2);
   }
 }

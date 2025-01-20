@@ -4,41 +4,37 @@ using Tent.Auth;
 using Tent.Logic;
 using Basketcase;
 using static Basketcase.Table;
-[TestClass]
-public class AuthTests : BaseTests
+[tc]public class AuthTests : BaseTests
 {
-  [TestMethod]
-  public void SaltAs() {
+  [tm]public void SaltAs() {
     var salt = new Salt();
-    var saltAsString = salt.AsString;
-    var saltAsByteArray = Encoding.UTF8.GetBytes(saltAsString, 0, saltAsString.Length);
-    var saltAsString2 = Encoding.UTF8.GetString(saltAsByteArray, 0, saltAsByteArray.Length);
-    assert(saltAsString == saltAsString2);
+    str saltAsStr = salt.AsString;
+    var saltAsBytArr = Encoding.UTF8.GetBytes(saltAsStr, 0, saltAsStr.Length);
+    str saltAsStr2 = Encoding.UTF8.GetString(saltAsBytArr, 0, saltAsBytArr.Length);
+    assert(saltAsStr == saltAsStr2);
   }
 
-  [TestMethod]
-  public void SignUpAndLogin() {
-    createUserTable();
+  [tm]public void SignUpAndLogin() {
+    crtUsrTbl();
 
-    string email = "case@sparkle.stream";
-    string password = "abcd1234";
-    var signUpResult = new SignUp(email, password).Execute();
+    str eml = "case@sparkle.stream";
+    str pw = "abcd1234";
+    var signUpResult = new SignUp(eml, pw).Exe();
     assert(!signUpResult.Failed);
       
-    var loginResult = new Login(email, password).Execute();
+    var loginResult = new Login(eml, pw).Exe();
     assert(!loginResult.Failed);
   }
 
-  [TestMethod]
-  public void LoginFail() {
-    string email = "case@sparkle.stream";
-    string password = "oops1ts3rong";
-    var result = new Login(email, password).Execute();
+  [tm]public void LoginFail() {
+    str eml = "case@sparkle.stream";
+    str pw = "oops1ts3rong";
+    var result = new Login(eml, pw).Exe();
     assert(result.Failed);
   }
 
   // todo: have duplicate .sql file that could be deleted now that table is created in code
-  void createUserTable() {
+  void crtUsrTbl() {
     var sql = new Table("User")
       .AddCol("Id", SqlType.Int, Syntax.PrimaryKey + Syntax.Identity(1, 1))
       .AddCol("Email", SqlType.VarChar(100), Syntax.NotNull)

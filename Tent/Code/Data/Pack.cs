@@ -7,9 +7,9 @@ public class Pack:Basketcase.Db
     new SqlConFct(),
     new Basketcase.Reader(),
     // todo: switch default to serialized cache
-    cache ?? new InMemoryCache(new MemoryCache(new MemoryCacheOptions()))
+    cache ?? new InMemCache(new MemoryCache(new MemoryCacheOptions()))
   ) { }
 
   int hr = 60 * 60;
-  public Basketcase.IDb Cache(string key) => Cache(key, 1*hr);
+  public Basketcase.IDb Cache(str key) => Cache(key, 1*hr);
 }

@@ -1,21 +1,21 @@
 ﻿namespace Tent.Auth.Password;
 using Tent.Logic;
-public class SendCode(string email, ISend send):Command
+public class SendCode(str eml, ISend send):Cmd
 {
-  public Result Execute() {
-    if (email.NotSet())
-      return Result.Failure("Email is required");
+  public Result Exe() {
+    if (eml.NotSet())
+      return Result.Fail("Email is required");
 
-    email = email.Trim();
-    var user = db.GetUserByEmail(email);
-    if (user == null)
-      return Result.Failure("Email not found");
+    eml = eml.Trim();
+    var usr = db.GetUsrByEml(eml);
+    if (usr == null)
+      return Result.Fail("Email not found");
     
-    var x = new VerificationCode(user.Id);
+    var x = new VerificationCode(usr.Id);
     (_, x.Id) = db.Ins(x);
 
     send.Send($"Reset Password Verification Code: {x.Code}");
 
-    return Result.Success;
+    return Result.Suc;
   }
 }

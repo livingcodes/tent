@@ -1,23 +1,22 @@
 ﻿namespace Tent.Common;
-using System;
-public static class Extensions
+public static class Ext
 {
-  public static string ToStringOr(this object value, string ifNull) =>
-    value == null
+  public static str ToStringOr(this obj val, str ifNull) =>
+    val == null
       ? ifNull
-      : value.ToString();
+      : val.ToString();
 
-  public static int ToInt(this string text, int @default = 0) =>
-    int.TryParse(text, out var result)
+  public static int Int(this str txt, int @default = 0) =>
+    int.TryParse(txt, out var result)
       ? result
       : @default;
 
-  public static DateTime ToDate(this string text, DateTime? @default = null) {
-    if (!@default.HasValue)
-      @default = DateTime.MinValue;
-    var succeeded = DateTime.TryParse(text, out var result);
-    if (!succeeded)
-      result = @default.Value;
+  public static dte Dte(this str txt, dte? dflt = null) {
+    if (!dflt.HasValue)
+      dflt = dte.MinValue;
+    var sucd = dte.TryParse(txt, out var result);
+    if (!sucd)
+      result = dflt.Value;
     return result;
   }
 

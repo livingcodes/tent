@@ -9,5 +9,5 @@ public class Shorthand
     }
   }
 
-  public static DateTime Now => DateTime.Now;
+  public static dte Now => dte.Now;
 }

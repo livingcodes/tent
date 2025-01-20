@@ -1,10 +1,10 @@
 ﻿namespace Tent.Wiki;
-public class WikiPageModel : BasePage
+public class WikiPageModel : BasePg
 {
   public Wiki Entry;
 
   public void OnGet() {
-    var slug = RouteData.Values["slug"].ToStringOr(null);
+    var slug = Rte("slug");
     if (slug == null) { 
       Title = "Slug not found";
       return;

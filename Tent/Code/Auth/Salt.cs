@@ -3,18 +3,18 @@ using System.Security.Cryptography;
 public class Salt
 {
   public Salt(int size = 16) {
-    AsByteArray = generate(size);
+    AsByteArray = gen(size);
   }
 
   public byte[] AsByteArray { get; }
 
-  public string AsString => asString 
+  public str AsString => asString 
     ?? (asString = Convert.ToBase64String(AsByteArray));
-  string asString;
+  str asString;
 
   public override string ToString() => AsString;
 
-  byte[] generate(int size) {
+  byte[] gen(int size) {
     byte[] salt = new byte[size];
     using (var rng = RandomNumberGenerator.Create())
       rng.GetBytes(salt);

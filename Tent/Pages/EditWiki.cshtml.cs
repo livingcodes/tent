@@ -1,11 +1,10 @@
 namespace Tent.Wiki;
-
-public class EditWikiModel : BasePage
+public class EditWikiModel:BasePg
 {
   public Wiki Entry;
 
   public void OnGet() {
-    var slug = RouteData.Values["slug"].ToStringOr(null);
+    var slug = Rte("slug");
     if (slug == null) {
       Title = "Slug not found.";
       return;
@@ -15,18 +14,17 @@ public class EditWikiModel : BasePage
   }
 
   public void OnPost() {
-    var cancel = Request.Form["cancel"].ToStringOr(null);
-    if (cancel == "Cancel") {
+    if (Frm("cancel") == "Cancel") {
       Response.Redirect(Request.Path);
       return;
     }
 
-    var save = Request.Form["save"].ToStringOr(null);
+    str save = Frm("save");
     if (save == "Save") {
-      var slug = RouteData.Values["slug"].ToString();
+      str slug = Rte("slug");
       var entry = db.Sel1<Wiki>("WHERE Slug = @Slug", slug);
-      entry.Title = Request.Form["title"].ToStringOr(null);
-      entry.Body = Request.Form["body"].ToStringOr(null);
+      entry.Title = Frm("title");
+      entry.Body = Frm("body");
       db.Upd(entry);
       Entry = entry;
     }

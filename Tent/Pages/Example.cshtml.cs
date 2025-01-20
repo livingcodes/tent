@@ -1,10 +1,10 @@
 ﻿namespace Tent.Pages;
-public class ContactModel:BasePage
+public class ContactModel:BasePg
 {
-  public string Message { get; set; }
+  public str Msg { get; set; }
 
   public void OnGet() {
     Title = "Example";
-    Message = "Model property from code-behind (PageModel)";
+    Msg = "Model property from code-behind (PageModel)";
   }
 }

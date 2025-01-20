@@ -1,6 +1,6 @@
 ﻿namespace Tent.Common;
 using Tent.Data;
-public class Command {
+public class Cmd {
   protected Pack db => _db ??= new Pack();
   Pack _db;
 }

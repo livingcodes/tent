@@ -1,28 +1,20 @@
 ﻿namespace Tent.Auth;
 using Tent.Data;
-public class Login
+public class Login(str eml, str pw)
 {
-  public Login(string email, string password) {
-    this.email = email;
-    this.password = password;
-    db = new Pack();
-  }
+  Pack db = new();
 
-  string email, password;
-  Pack db;
+  public IResult<User> Exe() {
+    var usr = db.Sel1<User>("where email = @email", eml);
+    if (usr == null)
+      return Result<User>.Fail(null, "Email is not registered");
 
-  public IResult<User> Execute() {
-    var user = db.Sel1<User>("where email = @email", email);
-         
-    if (user == null)
-      return Result<User>.Failure(null, "Email is not registered");
+    var inputHash = new Hash(pw, usr.Salt).AsString;
 
-    var inputHash = new Hash(password, user.Salt).AsString;
-
-    if (user.PasswordHash != inputHash)
-      return Result<User>.Failure(user, "Password incorrect");
+    if (usr.PasswordHash != inputHash)
+      return Result<User>.Fail(usr, "Password incorrect");
     
-    return Result<User>.Success(user);
+    return Result<User>.Suc(usr);
   }
 }
 

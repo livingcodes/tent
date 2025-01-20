@@ -7,19 +7,19 @@ using Basketcase;
 public class BaseTests
 {
   public BaseTests() {
-    //this.configuration = new ConfigurationBuilder()
-    //    .AddJsonFile(@"c:\code\secrets\Tent\settings.json")
-    //    .Build();
-    //string connectionString = configuration["connectionString"];
+    //this.cfg = new ConfigurationBuilder()
+    //  .AddJsonFile(@"c:\code\secrets\Tent\settings.json")
+    //  .Build();
+    //str conStr = cfg["conStr"];
 
     // i wasn't able to figure out how to construct distributed memory cache
     // the IOptions in particular
     // so i used the service provider to build it
-    IServiceCollection services = new ServiceCollection();
-    services.AddDistributedMemoryCache();
-    var serviceProvider = services.BuildServiceProvider();
-    var distributedCache = serviceProvider.GetService<IDistributedCache>();
-
+    IServiceCollection svc = new ServiceCollection();
+    svc.AddDistributedMemoryCache();
+    var svcPrvdr = svc.BuildServiceProvider();
+    var distributedCache = svcPrvdr.GetService<IDistributedCache>();
+    
     this.db = new Db(
       new Tent.Data.SqlConFct(), 
       new Reader(), 
@@ -30,10 +30,10 @@ public class BaseTests
     );
   }
 
-  protected IConfigurationRoot configuration;
+  protected IConfigurationRoot cfg;
   protected IDb db;
 
-  protected void assert(bool condition) {
+  protected void assert(bln condition) {
     Assert.IsTrue(condition);
   }
 }

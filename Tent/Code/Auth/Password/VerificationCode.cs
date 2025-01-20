@@ -8,8 +8,8 @@ public class VerificationCode {
     DateExpires = DateCreated.AddDays(1);
   }
   public int Id, UserId;
-  public bool IsReset;
-  public string Code;
-  public DateTime DateCreated, DateExpires;
-  public DateTime? DateReset;
+  public bln IsReset;
+  public str Code;
+  public dte DateCreated, DateExpires;
+  public dte? DateReset;
 }

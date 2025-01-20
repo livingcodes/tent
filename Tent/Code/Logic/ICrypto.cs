@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.DataProtection;
 
 public interface ICrypto
 {
-  string Encrypt(string value);
-  string Decrypt(string value);
+  str Encrypt(str val);
+  str Decrypt(str val);
 }
 
 public class Crypto : ICrypto
@@ -14,9 +14,9 @@ public class Crypto : ICrypto
     protector = provider.CreateProtector("encrypt-cookie");
   IDataProtector protector;
 
-  public string Encrypt(string value) =>
-    protector.Protect(value);
+  public str Encrypt(str val) =>
+    protector.Protect(val);
 
-  public string Decrypt(string value) =>
-    protector.Unprotect(value);
+  public str Decrypt(str val) =>
+    protector.Unprotect(val);
 }
