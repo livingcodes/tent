@@ -39,6 +39,19 @@
   var source = document.querySelector('#Body');
   var editor = document.querySelector('#editor');
   var preview = document.querySelector('#preview');
+  var suggestionBox;
+  var tagList = [
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'p', 'span', 'a', 'img', 'figure', 'figcaption', 'blockquote', 'pre', 'code',
+    'div', 'header', 'main', 'footer', 'section', 'article', 'nav', 'aside',
+    'ul', 'ol', 'li', 
+    'table', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot', 
+    'input', 'button', 'form', 'label', 'select', 'option', 'textarea',
+    'script', 'style', 'link', 'meta', 'title', 'iframe',
+    'details', 'summary', 'dialog', 'menu', 'menuitem',
+    'canvas', 'video', 'audio', 'svg',
+    'template', 'source', 'track', 'embed', 'object', 'param', 'map', 'area'
+  ];
 
   function saveCursorPosition() {
     var selection = window.getSelection();
@@ -89,9 +102,90 @@
     preview.innerHTML = source.value;
   }
 
-  editor.addEventListener('input', function() {
+  function showTagSuggestions(filter = '') {
+    tagSuggestionMode = true;
+    if (suggestionBox) {
+      var boxes = Array.from(document.body.childNodes).filter(x => x == suggestionBox);
+      if (boxes.length > 0)
+        document.body.removeChild(suggestionBox);
+      else suggestionBox = null;
+    }
+    suggestionBox = document.createElement('div');
+    suggestionBox.id = 'suggestionBox';
+    suggestionBox.style.position = 'absolute';
+    suggestionBox.style.backgroundColor = '#fff';
+    suggestionBox.style.border = '1px solid #ccc';
+    suggestionBox.style.zIndex = '1000';
+    suggestionBox.style.maxHeight = '150px';
+    suggestionBox.style.overflowY = 'auto';
+
+    var filteredTags = tagList.filter(tag => tag.startsWith(filter));
+    filteredTags.forEach(function(tag) {
+      var suggestionItem = document.createElement('div');
+      suggestionItem.className = 'suggestionItem';
+      suggestionItem.style.padding = '5px';
+      suggestionItem.style.cursor = 'pointer';
+      suggestionItem.textContent = tag;
+      suggestionItem.addEventListener('click', function() {
+        insertTag(tag);
+        tagSuggestionMode = false;
+        document.body.removeChild(suggestionBox);
+      });
+      suggestionBox.appendChild(suggestionItem);
+    });
+
+    document.body.appendChild(suggestionBox);
+    var rect = getCaretCoordinates();
+    suggestionBox.style.left = rect.left + 'px';
+    suggestionBox.style.top = (rect.top + 20) + 'px';
+  }
+
+  function getCaretCoordinates() {
+    var x = 0, y = 0;
+    var selection = window.getSelection();
+    if (selection.rangeCount) {
+      var range = selection.getRangeAt(0).cloneRange();
+      range.collapse(true);
+      var rect = range.getClientRects()[0];
+      if (rect) {
+        x = rect.left;
+        y = rect.top + window.scrollY;
+      }
+    }
+    return { left: x, top: y };
+  }
+
+  function insertTag(tag) {
+    //var selection = window.getSelection();
+    //var range = selection.getRangeAt(0);
+    var tagText = '<' + tag + '></' + tag + '>';
+    var textNode = document.createTextNode(tagText);
+    editor.append(textNode);
+    // range.deleteContents();
+    // range.insertNode(textNode);
+    // range.setStart(textNode, tagText.length - tag.length - 3);
+    // range.setEnd(textNode, tagText.length - tag.length - 3);
+    // selection.removeAllRanges();
+    // selection.addRange(range);
     source.value = editor.innerText;
     applySyntaxHighlighting();
+  }
+
+  var tagSuggestionMode = false;
+
+  editor.addEventListener('input', function(e) {
+    source.value = editor.innerText;
+    applySyntaxHighlighting();
+    if (e.inputType === 'insertText' && e.data === '<') {
+      showTagSuggestions();
+    } else if (e.inputType === 'insertText' && suggestionBox) {
+      var text = editor.innerText;
+      var lastOpenBracket = text.lastIndexOf('<');
+      if (lastOpenBracket !== -1) {
+        var filter = text.substring(lastOpenBracket + 1);
+        showTagSuggestions(filter);
+      }
+    }
   });
 
   source.addEventListener('change', function() {
@@ -112,5 +206,7 @@
   .editor input[name='save']{background-color:#0a0; color:#fff; border:1px solid #0b0;
     font-weight:bold; padding:9px 35px;}
   .editor input[name='cancel']{background-color:#dde; color:#999; border:1px solid #ddd;}
+  .suggestionItem:hover{background-color:#eee;}
 </style>
 }
+
