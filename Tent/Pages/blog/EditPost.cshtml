@@ -1,6 +1,14 @@
 ﻿@page "/post/edit/{id}"
 @model Tent.Pages.Blog.EditPostPage
 
+<style>
+  #editor{overflow-y:scroll;}
+  #sugBox{position:absolute; z-index:1000;
+    background-color:#fff; border:1px solid #ccc; 
+    max-height:150px; overflow-y:auto;}
+  .sugItm{padding:5px; cursor:pointer;}
+</style>
+
 <p>
   <a href="/blog">POSTS</a>
 </p>
@@ -36,16 +44,251 @@
 </form>
 
 <script>
-  var source = document.querySelector('#Body');
-  var editor = document.querySelector('#editor');
-  var preview = document.querySelector('#preview');
-  var suggestionBox;
-  var tagList = [
+  var doc = document;
+  var Ŏ = (qry) => doc.querySelectorAll(qry);
+  var Ŏ1 = (qry) => doc.querySelector(qry);
+  Element.prototype.on = function(evtNm, fn) {
+    this.addEventListener(evtNm, fn);
+  }
+
+
+  class Sug
+  {
+    constructor(txts, onSugClick /*(e, ᵉitm, txt)*/) {
+      this.txts = txts;
+      this.ᵉbox = this.#crtᵉBox(txts, onSugClick);
+      this.hide();
+      doc.body.appendChild(this.ᵉbox);
+    }
+    ᵉitms = [];
+
+    show() {
+      this.ᵉbox.style.display = "block";
+    }
+
+    hide() {
+      this.ᵉbox.style.display = "none";
+    }
+
+    shown() {
+      return this.ᵉbox.style.display == "block";
+    }
+
+    setLoc(lt, top) {
+      this.ᵉbox.style.left = lt + "px";
+      var offsetY = 20;
+      this.ᵉbox.style.top = top + offsetY + "px";
+    }
+
+    search(qry) {
+      this.ᵉitms.forEach(ᵉitm => {
+        if (ᵉitm.innerText.startsWith(qry))
+          ᵉitm.style.display = "block";
+        else
+          ᵉitm.style.display = "none";
+      })
+    }
+
+    #crtᵉBox(txts, onSugClick) {
+      var ᵉbox = doc.createElement("div");
+      ᵉbox.id = "sugBox";
+
+      txts.forEach(txt => {
+        var ᵉitm = this.#crtᵉItm(txt, onSugClick);
+        ᵉbox.appendChild(ᵉitm);
+        this.ᵉitms.push(ᵉitm);
+      });
+
+      return ᵉbox;
+    }
+
+    #crtᵉItm(txt, onSugClick) {
+      var ᵉitm = doc.createElement("div");
+      ᵉitm.className = "sugItm";
+      ᵉitm.textContent = txt;
+      console.log("wire sug click: " + txt)
+      ᵉitm.on("click", e => onSugClick(e, ᵉitm, txt));
+      return ᵉitm;
+    }
+  }
+
+
+  class Editor
+  {
+    constructor(ᵉhtm, ᵉedr, ᵉprv, sug) {
+      this.ᵉhtm = ᵉhtm;
+      this.ᵉedr = ᵉedr;
+      this.ᵉprv = ᵉprv;
+
+      this.#onHtmChngUpdPrv();
+      this.#onEdrInpChng(sug);
+      this.#onEdrBlurSaveCsrPos()
+
+      this.styleSyntax();
+    }
+
+    // window, ᵉedr
+    getCsrPos() {
+      var sel = window.getSelection();
+      if (!sel.focusNode || sel.focusNode.parentElement != this.ᵉedr)
+        return 0;
+      if (sel.rangeCount == 0)
+        return 0;
+      var rng = sel.getRangeAt(0);
+      var preRng = rng.cloneRange();
+      preRng.selectNodeContents(this.ᵉedr);
+      preRng.setEnd(rng.endContainer, rng.endOffset);
+      var pos = preRng.toString().length;
+      return pos;
+    }
+
+    // window, doc, ᵉedr
+    setCsrPos(pos) {
+      var sel = window.getSelection();
+      var rng = doc.createRange();
+      var nodeStack = [this.ᵉedr], node, charCt = 0,
+        foundStart = false, stop = false;
+
+      while (!stop && (node = nodeStack.pop())) {
+        if (node.nodeType == 3) {
+          var nextCharCt = charCt + node.length;
+          if (!foundStart && pos >= charCt && pos <= nextCharCt) {
+            rng.setStart(node, pos - charCt);
+            rng.setEnd(node, pos - charCt);
+            foundStart = true;
+            stop = true;
+          }
+          charCt = nextCharCt;
+        } else {
+          var i = node.childNodes.length;
+          while (i--) {
+            nodeStack.push(node.childNodes[i]);
+          }
+        }
+      }
+
+      sel.removeAllRanges();
+      sel.addRange(rng);
+    }
+
+    // window, doc, ᵉhtm, ᵉedr, ᵉprv
+    styleSyntax() {
+      var pos = this.getCsrPos();
+      var htm = this.ᵉhtm.value;
+      htm = htm.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      htm = htm.replace(/(&lt;\/?)(\w+)([^&gt;]*&gt;)/g, '$1<span class="html-tag">$2</span>$3');
+      this.ᵉedr.innerHTML = htm;
+      this.setCsrPos(pos);
+      this.ᵉprv.innerHTML = this.ᵉhtm.value;
+    }
+
+    // window
+    getCaretLoc() {
+      var x = 0, y = 0;
+      var sel = window.getSelection();
+      if (sel.rangeCount) {
+        var rng = sel.getRangeAt(0).cloneRange();
+        rng.collapse(true);
+        var rect = rng.getClientRects()[0];
+        if (rect) {
+          x = rect.left;
+          y = rect.top + window.scrollY;
+        }
+      }
+      return { lt: x, top: y };
+    }
+
+    insTag(tag) {
+      console.log(tag);
+      var tagHtm = `<${tag}></${tag}>`;
+      var txtNode = doc.createTextNode(tagHtm);
+      // todo: insert at cursor
+      var pos = this.csrPos;
+      var txt = this.ᵉedr.innerText;
+      
+      //var opnBrktIdx = txt.indexOfPrv(pos, char:"<");
+      var char = "<";
+      var offset = 1;
+      var searchI = -1;
+      var found = false;
+      do {
+        searchI = pos - offset;
+        var searchChar = txt.substring(searchI, searchI + 1);
+        found = searchChar == char;
+        offset += 1;
+      } while (!found && offset < 8)
+      
+      var end = txt.substring(pos);
+      if (found)
+        pos = searchI;
+      var start = txt.substring(0, pos);
+      this.ᵉedr.innerText = `${start}${tagHtm}${end}`
+
+      var _csrPos = found ? pos + tag.length + 2 : pos;
+      this.setCsrPos(_csrPos); // todo: set between tags
+
+      //this.ᵉedr.append(txtNode);
+      this.ᵉhtm.value = this.ᵉedr.innerText;
+      this.styleSyntax();
+    }
+
+    // update preview when html source changes
+    #onHtmChngUpdPrv() {
+      this.ᵉhtm.on('change', e => {
+        this.ᵉprv.innerHTML = this.ᵉhtm.value;
+      });
+    }
+
+    csrPos = 0;
+    #onEdrBlurSaveCsrPos() {
+      this.ᵉedr.on("blur", e => {
+        this.csrPos = this.getCsrPos();
+      })
+    }
+
+    #onEdrInpChng(sug) {
+      this.ᵉedr.on("input", e => {
+        this.ᵉhtm.value = this.ᵉedr.innerText;
+        this.styleSyntax();
+        if (e.inputType === "insertText" && e.data === "<") {
+          var loc = this.getCaretLoc();
+          sug.setLoc(loc.lt, loc.top);
+          sug.show();
+        } else if (e.inputType === "insertText" && sug.shown()) {
+          var tagTyping = this.#getTagTyping(this.ᵉedr)
+          sug.search(tagTyping);
+          sug.show();
+        }
+        else {
+          sug.hide();
+        }
+      });
+    }
+
+    #getTagTyping(ᵉedr) {
+      var pos = this.getCsrPos();
+      var i = 1;
+      var found = false;
+      var tagTyping = "";
+      do {
+        var prvChar = ᵉedr.innerText[pos - i];
+        found = (prvChar == "<" || prvChar == "/")
+        if (found)
+          break;
+        tagTyping = prvChar + tagTyping;
+        i++;
+      } while (!found || i < 8)
+      return tagTyping;
+    }
+  }
+
+
+  var tags = [
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
     'p', 'span', 'a', 'img', 'figure', 'figcaption', 'blockquote', 'pre', 'code',
     'div', 'header', 'main', 'footer', 'section', 'article', 'nav', 'aside',
-    'ul', 'ol', 'li', 
-    'table', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot', 
+    'ul', 'ol', 'li',
+    'table', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot',
     'input', 'button', 'form', 'label', 'select', 'option', 'textarea',
     'script', 'style', 'link', 'meta', 'title', 'iframe',
     'details', 'summary', 'dialog', 'menu', 'menuitem',
@@ -53,146 +296,14 @@
     'template', 'source', 'track', 'embed', 'object', 'param', 'map', 'area'
   ];
 
-  function saveCursorPosition() {
-    var selection = window.getSelection();
-    if (selection.rangeCount == 0)
-      return 0;
-    var range = selection.getRangeAt(0);
-    var preCaretRange = range.cloneRange();
-    preCaretRange.selectNodeContents(editor);
-    preCaretRange.setEnd(range.endContainer, range.endOffset);
-    var start = preCaretRange.toString().length;
-    return start;
+  var onSugClick = function(e, ᵉitm, txt) {
+    console.log("triggered on sug. txt:" + txt)
+    edr.insTag(txt);
+    sug.hide();
   }
+  var sug = new Sug(tags, onSugClick);
+  var edr = new Editor(Ŏ1('#Body'), Ŏ1('#editor'), Ŏ1('#preview'), sug);
 
-  function restoreCursorPosition(position) {
-    var selection = window.getSelection();
-    var range = document.createRange();
-    var nodeStack = [editor], node, charCount = 0, foundStart = false, stop = false;
-
-    while (!stop && (node = nodeStack.pop())) {
-      if (node.nodeType == 3) {
-        var nextCharCount = charCount + node.length;
-        if (!foundStart && position >= charCount && position <= nextCharCount) {
-          range.setStart(node, position - charCount);
-          range.setEnd(node, position - charCount);
-          foundStart = true;
-          stop = true;
-        }
-        charCount = nextCharCount;
-      } else {
-        var i = node.childNodes.length;
-        while (i--) {
-          nodeStack.push(node.childNodes[i]);
-        }
-      }
-    }
-
-    selection.removeAllRanges();
-    selection.addRange(range);
-  }
-
-  function applySyntaxHighlighting() {
-    var cursorPosition = saveCursorPosition();
-    var text = source.value;
-    text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    text = text.replace(/(&lt;\/?)(\w+)([^&gt;]*&gt;)/g, '$1<span class="html-tag">$2</span>$3');
-    editor.innerHTML = text;
-    restoreCursorPosition(cursorPosition);
-    preview.innerHTML = source.value;
-  }
-
-  function showTagSuggestions(filter = '') {
-    tagSuggestionMode = true;
-    if (suggestionBox) {
-      var boxes = Array.from(document.body.childNodes).filter(x => x == suggestionBox);
-      if (boxes.length > 0)
-        document.body.removeChild(suggestionBox);
-      else suggestionBox = null;
-    }
-    suggestionBox = document.createElement('div');
-    suggestionBox.id = 'suggestionBox';
-    suggestionBox.style.position = 'absolute';
-    suggestionBox.style.backgroundColor = '#fff';
-    suggestionBox.style.border = '1px solid #ccc';
-    suggestionBox.style.zIndex = '1000';
-    suggestionBox.style.maxHeight = '150px';
-    suggestionBox.style.overflowY = 'auto';
-
-    var filteredTags = tagList.filter(tag => tag.startsWith(filter));
-    filteredTags.forEach(function(tag) {
-      var suggestionItem = document.createElement('div');
-      suggestionItem.className = 'suggestionItem';
-      suggestionItem.style.padding = '5px';
-      suggestionItem.style.cursor = 'pointer';
-      suggestionItem.textContent = tag;
-      suggestionItem.addEventListener('click', function() {
-        insertTag(tag);
-        tagSuggestionMode = false;
-        document.body.removeChild(suggestionBox);
-      });
-      suggestionBox.appendChild(suggestionItem);
-    });
-
-    document.body.appendChild(suggestionBox);
-    var rect = getCaretCoordinates();
-    suggestionBox.style.left = rect.left + 'px';
-    suggestionBox.style.top = (rect.top + 20) + 'px';
-  }
-
-  function getCaretCoordinates() {
-    var x = 0, y = 0;
-    var selection = window.getSelection();
-    if (selection.rangeCount) {
-      var range = selection.getRangeAt(0).cloneRange();
-      range.collapse(true);
-      var rect = range.getClientRects()[0];
-      if (rect) {
-        x = rect.left;
-        y = rect.top + window.scrollY;
-      }
-    }
-    return { left: x, top: y };
-  }
-
-  function insertTag(tag) {
-    //var selection = window.getSelection();
-    //var range = selection.getRangeAt(0);
-    var tagText = '<' + tag + '></' + tag + '>';
-    var textNode = document.createTextNode(tagText);
-    editor.append(textNode);
-    // range.deleteContents();
-    // range.insertNode(textNode);
-    // range.setStart(textNode, tagText.length - tag.length - 3);
-    // range.setEnd(textNode, tagText.length - tag.length - 3);
-    // selection.removeAllRanges();
-    // selection.addRange(range);
-    source.value = editor.innerText;
-    applySyntaxHighlighting();
-  }
-
-  var tagSuggestionMode = false;
-
-  editor.addEventListener('input', function(e) {
-    source.value = editor.innerText;
-    applySyntaxHighlighting();
-    if (e.inputType === 'insertText' && e.data === '<') {
-      showTagSuggestions();
-    } else if (e.inputType === 'insertText' && suggestionBox) {
-      var text = editor.innerText;
-      var lastOpenBracket = text.lastIndexOf('<');
-      if (lastOpenBracket !== -1) {
-        var filter = text.substring(lastOpenBracket + 1);
-        showTagSuggestions(filter);
-      }
-    }
-  });
-
-  source.addEventListener('change', function() {
-    preview.innerHTML = source.value;
-  });
-
-  applySyntaxHighlighting();
 </script>
 
 @section Header {
@@ -206,7 +317,6 @@
   .editor input[name='save']{background-color:#0a0; color:#fff; border:1px solid #0b0;
     font-weight:bold; padding:9px 35px;}
   .editor input[name='cancel']{background-color:#dde; color:#999; border:1px solid #ddd;}
-  .suggestionItem:hover{background-color:#eee;}
+  .sugItm:hover{background-color:#eee;}
 </style>
 }
-
