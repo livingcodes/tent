@@ -51,6 +51,29 @@
     this.addEventListener(evtNm, fn);
   }
 
+  String.prototype.revIdx = function(i, char) {
+    var offset = 1;
+    var found = false;
+    var j = -1;
+    do {
+      j = i - offset;
+      var curChar = this.substring(j, j+1);
+      found = curChar == char;
+      offset += 1;
+    } while (!found && j >= 0 && offset < 8)
+    return j;
+  }
+
+  Element.prototype.rent = function(tag, cls) {
+    if (!this.parentElement)
+      return this;
+    if (this.parentElement.tagName == tag
+    &&  this.parentElement.classList.contains(cls))
+      return this.parentElement;
+    return this.parentElement.rent(tag, cls);
+  }
+
+
 
   class Sug
   {
@@ -130,7 +153,7 @@
     // window, ᵉedr
     getCsrPos() {
       var sel = window.getSelection();
-      if (!sel.focusNode || sel.focusNode.parentElement != this.ᵉedr)
+      if (!sel.focusNode || !sel.focusNode.parentElement.rent("html-editor"))
         return 0;
       if (sel.rangeCount == 0)
         return 0;
@@ -201,33 +224,17 @@
     insTag(tag) {
       console.log(tag);
       var tagHtm = `<${tag}></${tag}>`;
-      var txtNode = doc.createTextNode(tagHtm);
-      // todo: insert at cursor
-      var pos = this.csrPos;
+      
+      var iCsr = this.csrPos;
       var txt = this.ᵉedr.innerText;
-      
-      //var opnBrktIdx = txt.indexOfPrv(pos, char:"<");
-      var char = "<";
-      var offset = 1;
-      var searchI = -1;
-      var found = false;
-      do {
-        searchI = pos - offset;
-        var searchChar = txt.substring(searchI, searchI + 1);
-        found = searchChar == char;
-        offset += 1;
-      } while (!found && offset < 8)
-      
-      var end = txt.substring(pos);
-      if (found)
-        pos = searchI;
-      var start = txt.substring(0, pos);
-      this.ᵉedr.innerText = `${start}${tagHtm}${end}`
+      var iTag = txt.revIdx(iCsr, "<");
+      var startTxt = txt.substring(0, iTag);
+      var endTxt = txt.substring(iTag + (iCsr - iTag));
+      this.ᵉedr.innerText = `${startTxt}${tagHtm}${endTxt}`;
 
-      var _csrPos = found ? pos + tag.length + 2 : pos;
-      this.setCsrPos(_csrPos); // todo: set between tags
+      var _iCsr = iTag > -1 ? iTag + tag.length + 2 : iCsr;
+      this.setCsrPos(_iCsr);
 
-      //this.ᵉedr.append(txtNode);
       this.ᵉhtm.value = this.ᵉedr.innerText;
       this.styleSyntax();
     }
