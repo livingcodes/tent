@@ -297,6 +297,7 @@
 
     #onEdrInpChng(sug) {
       this.ᵉedr.on("input", e => {
+        this.csrPos = this.getCsrPos(); // Save the cursor position on input
         this.ᵉhtm.value = this.ᵉedr.innerText;
         this.styleSyntax();
         if (e.inputType === "insertText" && e.data === "<") {
