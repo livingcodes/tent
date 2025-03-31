@@ -7,6 +7,7 @@
     background-color:#fff; border:1px solid #ccc; 
     max-height:150px; overflow-y:auto;}
   .sugItm{padding:5px; cursor:pointer;}
+  .sugItm.selected{background-color:#b3d4fc; font-weight:bold;}
 </style>
 
 <p>
@@ -73,8 +74,6 @@
     return this.parentElement.rent(tag, cls);
   }
 
-
-
   class Sug
   {
     constructor(txts, onSugClick /*(e, ᵉitm, txt)*/) {
@@ -82,6 +81,7 @@
       this.ᵉbox = this.#crtᵉBox(txts, onSugClick);
       this.hide();
       doc.body.appendChild(this.ᵉbox);
+      this.selectedIndex = -1;
     }
     ᵉitms = [];
 
@@ -104,12 +104,22 @@
     }
 
     search(qry) {
-      this.ᵉitms.forEach(ᵉitm => {
-        if (ᵉitm.innerText.startsWith(qry))
+      let firstVisibleIndex = -1;
+      this.ᵉitms.forEach((ᵉitm, index) => {
+        if (ᵉitm.innerText.startsWith(qry)) {
           ᵉitm.style.display = "block";
-        else
+          if (firstVisibleIndex === -1) {
+            firstVisibleIndex = index;
+          }
+        } else {
           ᵉitm.style.display = "none";
-      })
+        }
+      });
+
+      if (this.selectedIndex === -1 || this.ᵉitms[this.selectedIndex].style.display === "none") {
+        this.selectedIndex = firstVisibleIndex;
+        this.updateSelection();
+      }
     }
 
     #crtᵉBox(txts, onSugClick) {
@@ -133,8 +143,39 @@
       ᵉitm.on("click", e => onSugClick(e, ᵉitm, txt));
       return ᵉitm;
     }
-  }
 
+    selectNext() {
+      if (this.selectedIndex < this.ᵉitms.length - 1) {
+        this.selectedIndex++;
+        this.updateSelection();
+      }
+    }
+
+    selectPrevious() {
+      if (this.selectedIndex > 0) {
+        this.selectedIndex--;
+        this.updateSelection();
+      }
+    }
+
+    updateSelection() {
+      this.ᵉitms.forEach((ᵉitm, index) => {
+        if (index === this.selectedIndex) {
+          ᵉitm.classList.add('selected');
+          ᵉitm.scrollIntoView({ block: 'nearest' });
+        } else {
+          ᵉitm.classList.remove('selected');
+        }
+      });
+    }
+
+    getSelectedText() {
+      if (this.selectedIndex >= 0 && this.selectedIndex < this.ᵉitms.length) {
+        return this.ᵉitms[this.selectedIndex].textContent;
+      }
+      return null;
+    }
+  }
 
   class Editor
   {
@@ -145,7 +186,8 @@
 
       this.#onHtmChngUpdPrv();
       this.#onEdrInpChng(sug);
-      this.#onEdrBlurSaveCsrPos()
+      this.#onEdrBlurSaveCsrPos();
+      this.#onKeyDown(sug);
 
       this.styleSyntax();
     }
@@ -224,7 +266,7 @@
     insTag(tag) {
       console.log(tag);
       var tagHtm = `<${tag}></${tag}>`;
-      
+
       var iCsr = this.csrPos;
       var txt = this.ᵉedr.innerText;
       var iTag = txt.revIdx(iCsr, "<");
@@ -287,8 +329,28 @@
       } while (!found || i < 8)
       return tagTyping;
     }
-  }
 
+    #onKeyDown(sug) {
+      this.ᵉedr.on("keydown", e => {
+        if (sug.shown()) {
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            sug.selectNext();
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            sug.selectPrevious();
+          } else if (e.key === "Enter") {
+            e.preventDefault();
+            var selectedText = sug.getSelectedText();
+            if (selectedText) {
+              this.insTag(selectedText);
+              sug.hide();
+            }
+          }
+        }
+      });
+    }
+  }
 
   var tags = [
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -312,6 +374,7 @@
   var edr = new Editor(Ŏ1('#Body'), Ŏ1('#editor'), Ŏ1('#preview'), sug);
 
 </script>
+
 
 @section Header {
 <style>
