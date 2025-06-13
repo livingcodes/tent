@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Tent/bin/Debug/net5.0/Tent.dll",
+            "program": "${workspaceFolder}/Tent/bin/Debug/net9.0/Tent.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Tent",
             "stopAtEntry": false,
