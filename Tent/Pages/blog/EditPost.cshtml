@@ -44,35 +44,8 @@
   <input name="save" type="submit" value="Save">
 </form>
 
+@section Scripts {
 <script>
-  var doc = document;
-  var Ŏ = (qry) => doc.querySelectorAll(qry);
-  var Ŏ1 = (qry) => doc.querySelector(qry);
-  Element.prototype.on = function(evtNm, fn) {
-    this.addEventListener(evtNm, fn);
-  }
-
-  String.prototype.revIdx = function(i, char) {
-    var offset = 1;
-    var found = false;
-    var j = -1;
-    do {
-      j = i - offset;
-      var curChar = this.substring(j, j+1);
-      found = curChar == char;
-      offset += 1;
-    } while (!found && j >= 0 && offset < 8)
-    return j;
-  }
-
-  Element.prototype.rent = function(tag, cls) {
-    if (!this.parentElement)
-      return this;
-    if (this.parentElement.tagName == tag
-    &&  this.parentElement.classList.contains(cls))
-      return this.parentElement;
-    return this.parentElement.rent(tag, cls);
-  }
 
   class Sug
   {
@@ -240,8 +213,16 @@
     styleSyntax() {
       var pos = this.getCsrPos();
       var htm = this.ᵉhtm.value;
-      htm = htm.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      htm = htm.replace(/(&lt;\/?)(\w+)([^&gt;]*&gt;)/g, '$1<span class="html-tag">$2</span>$3');
+      var surround = {
+        "before":'<span class="html-tag">', 
+        "after":'</span>'
+      };
+      htm = htm
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/(&lt;\/?)(\w+)([^&gt;]*&gt;)/g, 
+          `$1${surround.before}$2${surround.after}$3`);
       this.ᵉedr.innerHTML = htm;
       this.setCsrPos(pos);
       this.ᵉprv.innerHTML = this.ᵉhtm.value;
@@ -375,14 +356,15 @@
   var edr = new Editor(Ŏ1('#Body'), Ŏ1('#editor'), Ŏ1('#preview'), sug);
 
 </script>
-
+}
 
 @section Header {
 <style>
   label{width:18%; font-weight:normal; vertical-align:top;}
   input{width:81%}
   .html-editor{display:inline-block; width:45%; height:300px; font-family:consolas; border: 1px solid #ccc; padding: 5px; white-space: pre-wrap; overflow-wrap: break-word;}
-  .html-tag{color:red; font-weight:bold;}
+  .html-tag{color:maroon; font-weight:bold;}
+
   .preview{display:inline-block; vertical-align:top; width:40%; border: 1px solid #ccc; padding: 5px; white-space: pre-wrap; overflow-wrap: break-word;}
   .editor input[type='submit']{display:inline-block; padding:5px 15px; margin:3px 0 0 0;}
   .editor input[name='save']{background-color:#0a0; color:#fff; border:1px solid #0b0;
