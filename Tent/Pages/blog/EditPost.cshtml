@@ -217,12 +217,31 @@
         "before":'<span class="html-tag">', 
         "after":'</span>'
       };
+      var attrSurround = {
+        "before":'<span class="html-attr">',
+        "after":'</span>'
+      };
+      // html encode &, <, >
+      // then wrap with span with class
       htm = htm
         .replace(/&/g, '&amp;')
+        //.replace(/"/g, '&quot;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/(&lt;\/?)(\w+)([^&gt;]*&gt;)/g, 
-          `$1${surround.before}$2${surround.after}$3`);
+        // Process tag name and attributes together in one pass
+        .replace(/(&lt;\/?)(\w+)(([^&gt;]*)&gt;)/g, (match, openTag, tagName, fullAttrs, attrsOnly) => {
+          // Highlight tag name
+          let result = `${openTag}<span class="html-tag">${tagName}</span>`;
+          
+          // Highlight only attribute names (not values)
+          let highlightedAttrs = attrsOnly.replace(
+            /(\s)(\w+)(="[^"]*"|=\w+)/g,
+            '$1<span class="html-attr">$2</span>$3'
+          );
+          
+          return `${result}${highlightedAttrs}&gt;`;
+        });
+        
       this.ᵉedr.innerHTML = htm;
       this.setCsrPos(pos);
       this.ᵉprv.innerHTML = this.ᵉhtm.value;
@@ -308,7 +327,7 @@
           break;
         tagTyping = prvChar + tagTyping;
         i++;
-      } while (!found || i < 8)
+      } while (!found || i < 20) // was 8 but now allowing for attrs
       return tagTyping;
     }
 
@@ -341,10 +360,11 @@
     'ul', 'ol', 'li',
     'table', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot',
     'input', 'button', 'form', 'label', 'select', 'option', 'textarea',
-    'script', 'style', 'link', 'meta', 'title', 'iframe',
+    'script', 'link', 'meta', 'title', 'iframe',
     'details', 'summary', 'dialog', 'menu', 'menuitem',
     'canvas', 'video', 'audio', 'svg',
     'template', 'source', 'track', 'embed', 'object', 'param', 'map', 'area'
+    //'style' this may not be an issue: omitting for now b/c causing parsing issue since both attr and tag
   ];
 
   var onSugClick = function(e, ᵉitm, txt) {
@@ -364,6 +384,7 @@
   input{width:81%}
   .html-editor{display:inline-block; width:45%; height:300px; font-family:consolas; border: 1px solid #ccc; padding: 5px; white-space: pre-wrap; overflow-wrap: break-word;}
   .html-tag{color:maroon; font-weight:bold;}
+  .html-attr{color:#009; font-style:italic;}
 
   .preview{display:inline-block; vertical-align:top; width:40%; border: 1px solid #ccc; padding: 5px; white-space: pre-wrap; overflow-wrap: break-word;}
   .editor input[type='submit']{display:inline-block; padding:5px 15px; margin:3px 0 0 0;}
