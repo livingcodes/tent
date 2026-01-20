@@ -225,8 +225,9 @@
           let result = `${openTag}<span class="html-tag">${tagName}</span>`;
           
           // Highlight only attribute names (not values)
+          // Allow spaces before and after the equals sign
           let highlightedAttrs = attrsOnly.replace(
-            /(\s)(\w+)(="[^"]*"|=\w+)/g,
+            /(\s)(\w+)(\s*=\s*(?:"[^"]*"|\w+))/g,
             '$1<span class="html-attr">$2</span>$3'
           );
           
