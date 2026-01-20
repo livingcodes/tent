@@ -226,8 +226,9 @@
           
           // Highlight only attribute names (not values)
           // Allow spaces before and after the equals sign
+          // Support both single and double quotes
           let highlightedAttrs = attrsOnly.replace(
-            /(\s)(\w+)(\s*=\s*(?:"[^"]*"|\w+))/g,
+            /(\s)(\w+)(\s*=\s*(?:"[^"]*"|'[^']*'|\w+))/g,
             '$1<span class="html-attr">$2</span>$3'
           );
           
