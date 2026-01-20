@@ -338,8 +338,8 @@
             var selectedText = sug.getSelectedText();
             if (selectedText) {
               this.insTag(selectedText);
-              sug.hide();
             }
+            sug.hide();
           }
         }
       });
@@ -380,7 +380,9 @@
   .html-tag{color:#a8f; font-weight:bold;}
   .html-attr{color:yellow;}
 
-  .preview{display:inline-block; vertical-align:top; width:40%; border: 1px solid #ccc; padding: 5px; white-space: pre-wrap; overflow-wrap: break-word;}
+  .preview{display:inline-block; vertical-align:top; width:40%; border: 1px solid #ccc; padding: 5px; 
+    /*white-space:pre-wrap;*/
+    overflow-wrap: break-word;}
   .editor input[type='submit']{display:inline-block; padding:5px 15px; margin:3px 0 0 0;}
   .editor input[name='save']{background-color:#0a0; color:#fff; border:1px solid #0b0;
     font-weight:bold; padding:9px 35px;}
