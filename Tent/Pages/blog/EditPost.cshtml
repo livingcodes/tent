@@ -1,15 +1,6 @@
 ﻿@page "/post/edit/{id}"
 @model Tent.Pages.Blog.EditPostPage
 
-<style>
-  #editor{overflow-y:scroll;}
-  #sugBox{position:absolute; z-index:1000;
-    background-color:#fff; border:1px solid #ccc; 
-    max-height:150px; overflow-y:auto;}
-  .sugItm{padding:5px; cursor:pointer;}
-  .sugItm.selected{background-color:#b3d4fc; font-weight:bold;}
-</style>
-
 <p>
   <a href="/blog">POSTS</a>
 </p>
@@ -380,17 +371,24 @@
 
 @section Header {
 <style>
+  body{font-size:1.2em;}
   label{width:18%; font-weight:normal; vertical-align:top;}
   input{width:81%}
   .html-editor{display:inline-block; width:45%; height:300px; font-family:consolas; border: 1px solid #ccc; padding: 5px; white-space: pre-wrap; overflow-wrap: break-word;}
-  .html-tag{color:maroon; font-weight:bold;}
-  .html-attr{color:#009; font-style:italic;}
+  .html-tag{color:#a8f; font-weight:bold;}
+  .html-attr{color:yellow;}
 
   .preview{display:inline-block; vertical-align:top; width:40%; border: 1px solid #ccc; padding: 5px; white-space: pre-wrap; overflow-wrap: break-word;}
   .editor input[type='submit']{display:inline-block; padding:5px 15px; margin:3px 0 0 0;}
   .editor input[name='save']{background-color:#0a0; color:#fff; border:1px solid #0b0;
     font-weight:bold; padding:9px 35px;}
   .editor input[name='cancel']{background-color:#dde; color:#999; border:1px solid #ddd;}
+  #editor{overflow-y:scroll; background-color:#222; color:#eee;}
+  #sugBox{position:absolute; z-index:1000;
+    background-color:#fff; border:1px solid #ccc; 
+    max-height:150px; overflow-y:auto;}
+  .sugItm{padding:5px; cursor:pointer;}
   .sugItm:hover{background-color:#eee;}
+  .sugItm.selected{background-color:#b3d4fc; font-weight:bold;}
 </style>
 }

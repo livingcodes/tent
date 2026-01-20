@@ -123,3 +123,9 @@ public class ConnectionFactory : IConnectionFactory
 * Support different data providers (like postgres, mysql, memory)
 * Imagine: intellisense for inline sql (for syntax and table and column names)
 * Admin: db.Truncate<T>(); db.CreateProcedure("GetStuff", "SELECT * FROM Stuff");
+
+# Editor
+
+txt - Text Area - Plain text that would be saved to file
+edr - Editor    - Text with highlighting
+prv - Preview   - HTML view
